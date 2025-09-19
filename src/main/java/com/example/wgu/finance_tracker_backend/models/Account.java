@@ -54,6 +54,9 @@ public class Account implements Transactionable {
         this.transactions = transactions;
     }
 
+    public Account() {
+    }
+
     public Account(Long id, String accountName, BigDecimal balance, List<Transaction> transactions) {
         this.id = id;
         this.accountName = accountName;

@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 public class SavingAccount extends Account{
@@ -14,6 +15,13 @@ public class SavingAccount extends Account{
     private Long id;
 
     private BigDecimal interestRate;
+
+    public SavingAccount(Long id, String accountName, BigDecimal balance, List<Transaction> transactions) {
+        super(id, accountName, balance, transactions);
+    }
+
+    public SavingAccount() {
+    }
 
     public SavingAccount(Long id, BigDecimal interestRate) {
         this.id = id;

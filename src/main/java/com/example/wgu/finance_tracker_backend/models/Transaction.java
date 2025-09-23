@@ -2,6 +2,7 @@ package com.example.wgu.finance_tracker_backend.models;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -10,16 +11,15 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String description;
-    private double amount;
+    private BigDecimal amount;
     private LocalDateTime date;
 
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "account_id")
+    private Account account;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
@@ -28,23 +28,11 @@ public class Transaction {
     public Transaction() {
     }
 
-    public Transaction(Long id, String description, double amount, LocalDateTime date, User user, Category category) {
+    public Transaction(Long id, BigDecimal amount, LocalDateTime date, TransactionType transactionType) {
         this.id = id;
-        this.description = description;
-        this.amount = amount;
-        this.date = date;
-        this.user = user;
-        this.category = category;
-    }
-
-    public Transaction(Long id, String description, double amount, LocalDateTime date, TransactionType transactionType, User user, Category category) {
-        this.id = id;
-        this.description = description;
         this.amount = amount;
         this.date = date;
         this.transactionType = transactionType;
-        this.user = user;
-        this.category = category;
     }
 
     public Long getId() {
@@ -55,19 +43,11 @@ public class Transaction {
         this.id = id;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public double getAmount() {
+   public BigDecimal getAmount() {
         return amount;
-    }
+   }
 
-    public void setAmount(double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
@@ -79,12 +59,12 @@ public class Transaction {
         this.date = date;
     }
 
-    public User getUser() {
-        return user;
+    public Account getAccount() {
+        return account;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(Account account) {
+        this.account = account;
     }
 
     public Category getCategory() {

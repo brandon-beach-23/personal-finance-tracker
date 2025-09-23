@@ -3,6 +3,7 @@ package com.example.wgu.finance_tracker_backend.models;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -12,33 +13,31 @@ public class Account implements Transactionable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long userId;
     private String accountName;
     private BigDecimal balance;
 
     @Enumerated(EnumType.STRING)
     private AccountType accountType;
 
-    @OneToMany(mappedBy = "account")
-    private List<Transaction> transactions;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Transaction> transactions = new ArrayList<>();
+
+    @OneToOne(mappedBy = "account")
+    private SavingsGoal savingsGoal;
 
     public Account() {
     }
 
-    public Account(Long id, String accountName, BigDecimal balance, List<Transaction> transactions) {
+    public Account(Long id, User user, String accountName, BigDecimal balance, AccountType accountType) {
         this.id = id;
-        this.accountName = accountName;
-        this.balance = balance;
-        this.transactions = transactions;
-    }
-
-    public Account(Long id, Long userId, String accountName, BigDecimal balance, AccountType accountType, List<Transaction> transactions) {
-        this.id = id;
-        this.userId = userId;
+        this.user = user;
         this.accountName = accountName;
         this.balance = balance;
         this.accountType = accountType;
-        this.transactions = transactions;
     }
 
     @Override

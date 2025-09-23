@@ -2,6 +2,7 @@ package com.example.wgu.finance_tracker_backend.models;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,23 +15,21 @@ public class User {
     private String password;
     private String email;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<SavingsGoal> savingsGoals;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SavingsGoal> savingsGoals = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Account> accounts;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Account> accounts = new ArrayList<>();
 
     public User() {
 
     }
 
-    public User(Long id, String userName, String password, String email, List<SavingsGoal> savingsGoals, List<Account> accounts) {
+    public User(Long id, String userName, String password, String email) {
         this.id = id;
         this.userName = userName;
         this.password = password;
         this.email = email;
-        this.savingsGoals = savingsGoals;
-        this.accounts = accounts;
     }
 
     public Long getId() {

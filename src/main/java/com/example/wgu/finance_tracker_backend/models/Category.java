@@ -2,6 +2,7 @@ package com.example.wgu.finance_tracker_backend.models;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -9,14 +10,18 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
 
     @OneToMany(mappedBy = "category")
-    private List<Transaction> transactions;
+    private List<Transaction> transactions = new ArrayList<>();
 
     public Category() {
 
+    }
+
+    public Category(Long id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     public Long getId() {
@@ -40,12 +45,6 @@ public class Category {
     }
 
     public void setTransactions(List<Transaction> transactions) {
-        this.transactions = transactions;
-    }
-
-    public Category(Long id, String name, List<Transaction> transactions) {
-        this.id = id;
-        this.name = name;
         this.transactions = transactions;
     }
 }

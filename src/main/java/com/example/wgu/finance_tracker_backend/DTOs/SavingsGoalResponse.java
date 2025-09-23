@@ -1,35 +1,24 @@
-package com.example.wgu.finance_tracker_backend.models;
-
-
-import jakarta.persistence.*;
-import org.hibernate.mapping.Join;
+package com.example.wgu.finance_tracker_backend.DTOs;
 
 import java.math.BigDecimal;
 
-@Entity
-public class SavingsGoal {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class SavingsGoalResponse {
 
+    private Long id;
     private String goalName;
     private BigDecimal targetAmount;
+    private Long accountId;
+    private Long userId;
 
-    @OneToOne
-    @JoinColumn(name = "account_id")
-    private Account account;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    public SavingsGoal() {
+    public SavingsGoalResponse() {
     }
 
-    public SavingsGoal(Long id, String goalName, BigDecimal targetAmount) {
+    public SavingsGoalResponse(Long id, String goalName, BigDecimal targetAmount, Long accountId, Long userId) {
         this.id = id;
         this.goalName = goalName;
         this.targetAmount = targetAmount;
+        this.accountId = accountId;
+        this.userId = userId;
     }
 
     public Long getId() {
@@ -56,11 +45,19 @@ public class SavingsGoal {
         this.targetAmount = targetAmount;
     }
 
-    public User getUser() {
-        return user;
+    public Long getAccountId() {
+        return accountId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

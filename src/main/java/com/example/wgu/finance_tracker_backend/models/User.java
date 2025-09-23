@@ -8,14 +8,11 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     private String userName;
     private String password;
     private String email;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Transaction> transactions;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<SavingsGoal> savingsGoals;
@@ -23,11 +20,24 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Account> accounts;
 
-    public int getId() {
+    public User() {
+
+    }
+
+    public User(Long id, String userName, String password, String email, List<SavingsGoal> savingsGoals, List<Account> accounts) {
+        this.id = id;
+        this.userName = userName;
+        this.password = password;
+        this.email = email;
+        this.savingsGoals = savingsGoals;
+        this.accounts = accounts;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -55,14 +65,6 @@ public class User {
         this.email = email;
     }
 
-    public List<Transaction> getTransactions() {
-        return transactions;
-    }
-
-    public void setTransactions(List<Transaction> transactions) {
-        this.transactions = transactions;
-    }
-
     public List<SavingsGoal> getSavingsGoals() {
         return savingsGoals;
     }
@@ -77,19 +79,5 @@ public class User {
 
     public void setAccounts(List<Account> accounts) {
         this.accounts = accounts;
-    }
-
-    public User(int id, String userName, String password, String email, List<Transaction> transactions, List<SavingsGoal> savingsGoals, List<Account> accounts) {
-        this.id = id;
-        this.userName = userName;
-        this.password = password;
-        this.email = email;
-        this.transactions = transactions;
-        this.savingsGoals = savingsGoals;
-        this.accounts = accounts;
-    }
-
-    public User() {
-
     }
 }

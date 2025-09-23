@@ -8,18 +8,22 @@ import java.util.List;
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     private String name;
 
     @OneToMany(mappedBy = "category")
     private List<Transaction> transactions;
 
-    public int getId() {
+    public Category() {
+
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -39,7 +43,7 @@ public class Category {
         this.transactions = transactions;
     }
 
-    public Category(int id, String name, List<Transaction> transactions) {
+    public Category(Long id, String name, List<Transaction> transactions) {
         this.id = id;
         this.name = name;
         this.transactions = transactions;

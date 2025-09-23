@@ -8,11 +8,14 @@ import java.time.LocalDateTime;
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     private String description;
     private double amount;
     private LocalDateTime date;
+
+    @Enumerated(EnumType.STRING)
+    private TransactionType transactionType;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -22,11 +25,33 @@ public class Transaction {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    public int getId() {
+    public Transaction() {
+    }
+
+    public Transaction(Long id, String description, double amount, LocalDateTime date, User user, Category category) {
+        this.id = id;
+        this.description = description;
+        this.amount = amount;
+        this.date = date;
+        this.user = user;
+        this.category = category;
+    }
+
+    public Transaction(Long id, String description, double amount, LocalDateTime date, TransactionType transactionType, User user, Category category) {
+        this.id = id;
+        this.description = description;
+        this.amount = amount;
+        this.date = date;
+        this.transactionType = transactionType;
+        this.user = user;
+        this.category = category;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -67,15 +92,6 @@ public class Transaction {
     }
 
     public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public Transaction(int id, String description, double amount, LocalDateTime date, User user, Category category) {
-        this.id = id;
-        this.description = description;
-        this.amount = amount;
-        this.date = date;
-        this.user = user;
         this.category = category;
     }
 }

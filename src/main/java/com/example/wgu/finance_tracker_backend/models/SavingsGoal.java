@@ -8,21 +8,25 @@ import org.hibernate.mapping.Join;
 public class SavingsGoal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     private String goalName;
     private double targetAmount;
-    private double currentAmount;
+
+    private Long accountId;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    public int getId() {
+    public SavingsGoal() {
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -42,14 +46,6 @@ public class SavingsGoal {
         this.targetAmount = targetAmount;
     }
 
-    public double getCurrentAmount() {
-        return currentAmount;
-    }
-
-    public void setCurrentAmount(double currentAmount) {
-        this.currentAmount = currentAmount;
-    }
-
     public User getUser() {
         return user;
     }
@@ -58,11 +54,10 @@ public class SavingsGoal {
         this.user = user;
     }
 
-    public SavingsGoal(int id, String goalName, double targetAmount, double currentAmount, User user) {
+    public SavingsGoal(Long id, String goalName, double targetAmount, User user) {
         this.id = id;
         this.goalName = goalName;
         this.targetAmount = targetAmount;
-        this.currentAmount = currentAmount;
         this.user = user;
     }
 }

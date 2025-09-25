@@ -79,15 +79,17 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction savedTransaction = transactionRepository.save(transaction);
 
         //Convert to a response DTO and return the response
-        TransactionResponse transactionResponse = new TransactionResponse();
-        transactionResponse.setId(savedTransaction.getId());
-        transactionResponse.setAccountId(savedTransaction.getAccount().getId());
-        transactionResponse.setCategoryName(savedTransaction.getCategory().getName());
-        transactionResponse.setAmount(savedTransaction.getAmount());
-        transactionResponse.setTransactionType(transactionRequest.getTransactionType());
-        transactionResponse.setName(savedTransaction.getName());
-        transactionResponse.setTransactionDate(savedTransaction.getDate());
-        return transactionResponse;
+//        TransactionResponse transactionResponse = new TransactionResponse();
+//        transactionResponse.setId(savedTransaction.getId());
+//        transactionResponse.setAccountId(savedTransaction.getAccount().getId());
+//        transactionResponse.setCategoryName(savedTransaction.getCategory().getName());
+//        transactionResponse.setAmount(savedTransaction.getAmount());
+//        transactionResponse.setTransactionType(transactionRequest.getTransactionType());
+//        transactionResponse.setName(savedTransaction.getName());
+//        transactionResponse.setTransactionDate(savedTransaction.getDate());
+//        return transactionResponse;
+
+        return convertToDto(savedTransaction);
     }
 
     @Override
@@ -143,16 +145,16 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction updatedTransaction = transactionRepository.save(existingTransaction);
 
         //Convert to DTO
-        TransactionResponse response = new TransactionResponse();
-        response.setId(updatedTransaction.getId());
-        response.setAccountId(updatedTransaction.getAccount().getId());
-        response.setCategoryName(updatedTransaction.getCategory().getName());
-        response.setAmount(updatedTransaction.getAmount());
-        response.setTransactionType(updatedTransaction.getTransactionType().toString());
-        response.setName(updatedTransaction.getName());
-        response.setTransactionDate(updatedTransaction.getDate());
+//        TransactionResponse response = new TransactionResponse();
+//        response.setId(updatedTransaction.getId());
+//        response.setAccountId(updatedTransaction.getAccount().getId());
+//        response.setCategoryName(updatedTransaction.getCategory().getName());
+//        response.setAmount(updatedTransaction.getAmount());
+//        response.setTransactionType(updatedTransaction.getTransactionType().toString());
+//        response.setName(updatedTransaction.getName());
+//        response.setTransactionDate(updatedTransaction.getDate());
 
-        return response;
+        return convertToDto(updatedTransaction);
     }
 
     @Override

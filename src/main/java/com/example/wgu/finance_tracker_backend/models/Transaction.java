@@ -3,7 +3,7 @@ package com.example.wgu.finance_tracker_backend.models;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 public class Transaction {
@@ -11,8 +11,9 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String name;
     private BigDecimal amount;
-    private LocalDateTime date;
+    private LocalDate date;
 
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
@@ -28,8 +29,9 @@ public class Transaction {
     public Transaction() {
     }
 
-    public Transaction(Long id, BigDecimal amount, LocalDateTime date, TransactionType transactionType) {
+    public Transaction(Long id, String name, BigDecimal amount, LocalDate date, TransactionType transactionType) {
         this.id = id;
+        this.name = name;
         this.amount = amount;
         this.date = date;
         this.transactionType = transactionType;
@@ -43,7 +45,15 @@ public class Transaction {
         this.id = id;
     }
 
-   public BigDecimal getAmount() {
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public BigDecimal getAmount() {
         return amount;
    }
 
@@ -51,11 +61,11 @@ public class Transaction {
         this.amount = amount;
     }
 
-    public LocalDateTime getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
@@ -73,5 +83,17 @@ public class Transaction {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public TransactionType getTransactionType() {
+        return transactionType;
+    }
+
+    public void setTransactionType(TransactionType transactionType) {
+        this.transactionType = transactionType;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 }

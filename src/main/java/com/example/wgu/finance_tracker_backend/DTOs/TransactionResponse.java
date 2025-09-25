@@ -1,6 +1,7 @@
 package com.example.wgu.finance_tracker_backend.DTOs;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class TransactionResponse {
 
@@ -10,17 +11,19 @@ public class TransactionResponse {
     private String categoryName;
     private String transactionType;
     private Long accountId;
+    private LocalDate transactionDate;
 
     public TransactionResponse() {
     }
 
-    public TransactionResponse(Long id, String name, BigDecimal amount, String categoryName, String transactionType, Long accountId) {
+    public TransactionResponse(Long id, String name, BigDecimal amount, String categoryName, String transactionType, Long accountId,  LocalDate transactionDate) {
         this.id = id;
         this.name = name;
         this.amount = amount;
         this.categoryName = categoryName;
         this.transactionType = transactionType;
         this.accountId = accountId;
+        this.transactionDate = transactionDate;
     }
 
     public Long getId() {
@@ -70,4 +73,13 @@ public class TransactionResponse {
     public void setAccountId(Long accountId) {
         this.accountId = accountId;
     }
+
+    public void setTransactionDate(LocalDate date) {
+    }
+
+    public LocalDate getTransactionDate() {
+        return transactionDate;
+    }
+
+
 }

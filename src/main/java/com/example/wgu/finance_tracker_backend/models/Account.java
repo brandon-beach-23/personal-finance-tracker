@@ -90,4 +90,19 @@ public class Account implements Transactionable {
         this.transactions = transactions;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public SavingsGoal getSavingsGoal() {
+        return savingsGoal;
+    }
+
+    public void setSavingsGoal(SavingsGoal savingsGoal) {
+        this.savingsGoal = savingsGoal;
+    }
 }

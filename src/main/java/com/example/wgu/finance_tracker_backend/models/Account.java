@@ -26,9 +26,6 @@ public class Account implements Transactionable {
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transaction> transactions = new ArrayList<>();
 
-    @OneToOne(mappedBy = "account")
-    private SavingsGoal savingsGoal;
-
     public Account() {
     }
 
@@ -38,6 +35,9 @@ public class Account implements Transactionable {
         this.accountName = accountName;
         this.balance = balance;
         this.accountType = accountType;
+    }
+
+    public Account(Long id, String accountName, BigDecimal balance, List<Transaction> transactions) {
     }
 
     @Override
@@ -67,42 +67,43 @@ public class Account implements Transactionable {
     }
 
     public String getAccountName() {
+
         return accountName;
     }
 
     public void setAccountName(String accountName) {
+
         this.accountName = accountName;
     }
 
     public BigDecimal getBalance() {
+
         return balance;
     }
 
     public void setBalance(BigDecimal balance) {
+
         this.balance = balance;
     }
 
     public List<Transaction> getTransactions() {
+
         return transactions;
     }
 
     public void setTransactions(List<Transaction> transactions) {
+
         this.transactions = transactions;
     }
 
     public User getUser() {
+
         return user;
     }
 
     public void setUser(User user) {
         this.user = user;
     }
-
-    public SavingsGoal getSavingsGoal() {
-        return savingsGoal;
-    }
-
-    public void setSavingsGoal(SavingsGoal savingsGoal) {
-        this.savingsGoal = savingsGoal;
-    }
 }
+
+

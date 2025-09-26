@@ -12,7 +12,7 @@ public class AccountRequest {
     private BigDecimal balance;
     private AccountType accountType;
     private Long userId;
-    private BigDecimal interestRate;
+
 
     public AccountRequest() {
 
@@ -25,13 +25,6 @@ public class AccountRequest {
         this.userId = userId;
     }
 
-    public AccountRequest(String accountName, BigDecimal balance, AccountType accountType, Long userId, BigDecimal interestRate) {
-        this.accountName = accountName;
-        this.balance = balance;
-        this.accountType = accountType;
-        this.userId = userId;
-        this.interestRate = interestRate;
-    }
 
     public String getAccountName() {
         return accountName;
@@ -65,11 +58,4 @@ public class AccountRequest {
         this.userId = userId;
     }
 
-    public BigDecimal getInterestRate() {
-        return interestRate;
-    }
-
-    public void setInterestRate (BigDecimal interestRate) {
-        this.interestRate = interestRate;
-    }
 }

@@ -4,7 +4,7 @@ import com.example.wgu.finance_tracker_backend.DTOs.AccountRequest;
 import com.example.wgu.finance_tracker_backend.DTOs.AccountResponse;
 import com.example.wgu.finance_tracker_backend.exceptions.ResourceNotFoundException;
 import com.example.wgu.finance_tracker_backend.models.Account;
-import com.example.wgu.finance_tracker_backend.models.SavingAccount;
+import com.example.wgu.finance_tracker_backend.models.SavingsAccount;
 import com.example.wgu.finance_tracker_backend.models.User;
 import com.example.wgu.finance_tracker_backend.repositories.AccountRepository;
 import com.example.wgu.finance_tracker_backend.repositories.UserRepository;
@@ -43,9 +43,9 @@ public class AccountServiceImpl implements AccountService {
         if (accountRequest.getAccountType().equals("CHECKING")) {
             newAccount = new Account();
         } else {
-            SavingAccount savingAccount = new SavingAccount();
-            savingAccount.setInterestRate(accountRequest.getInterestRate());
-            newAccount = savingAccount;
+            SavingsAccount savingsAccount = new SavingsAccount();
+            savingsAccount.setInterestRate(accountRequest.getInterestRate());
+            newAccount = savingsAccount;
         }
 
         newAccount.setAccountName(accountRequest.getAccountName());
@@ -87,8 +87,8 @@ public class AccountServiceImpl implements AccountService {
         existingAccount.setAccountType(accountRequest.getAccountType());
 
         // Step 4: Handle specific fields for Savings Accounts.
-        if (existingAccount instanceof SavingAccount) {
-            ((SavingAccount) existingAccount).setInterestRate(accountRequest.getInterestRate());
+        if (existingAccount instanceof SavingsAccount) {
+            ((SavingsAccount) existingAccount).setInterestRate(accountRequest.getInterestRate());
         }
 
         // Step 5: Save the updated account and map to DTO.
@@ -102,8 +102,8 @@ public class AccountServiceImpl implements AccountService {
         accountResponse.setAccountType(updatedAccount.getAccountType().toString());
 
         // Set interest rate for Savings Accounts on the response DTO
-        if (updatedAccount instanceof SavingAccount) {
-            accountResponse.setInterestRate(((SavingAccount) updatedAccount).getInterestRate());
+        if (updatedAccount instanceof SavingsAccount) {
+            accountResponse.setInterestRate(((SavingsAccount) updatedAccount).getInterestRate());
         }
 
         return accountResponse;
@@ -137,8 +137,8 @@ public class AccountServiceImpl implements AccountService {
                     dto.setUserId(account.getUser().getId());
                     dto.setAccountType(account.getAccountType().toString());
                     // Check for SavingAccount to include interest rate
-                    if (account instanceof SavingAccount) {
-                        dto.setInterestRate(((SavingAccount) account).getInterestRate());
+                    if (account instanceof SavingsAccount) {
+                        dto.setInterestRate(((SavingsAccount) account).getInterestRate());
                     }
                     return dto;
                 })

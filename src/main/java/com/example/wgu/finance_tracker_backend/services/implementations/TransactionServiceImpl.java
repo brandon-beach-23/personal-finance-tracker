@@ -37,7 +37,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public TransactionResponse create(TransactionRequest transactionRequest) {
+    public TransactionResponse createTransaction(TransactionRequest transactionRequest) {
 
         //Create the account and category objects required for the transaction entity
         Account account = accountRepository.findById(transactionRequest.getAccountId())
@@ -83,7 +83,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public TransactionResponse update(Long transactionId, TransactionRequest transactionRequest) {
+    public TransactionResponse updateTransaction(Long transactionId, TransactionRequest transactionRequest) {
 
         //Find the existing transaction
         Transaction existingTransaction = transactionRepository.findById(transactionId)
@@ -138,7 +138,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public void delete(Long transactionId) {
+    public void deleteTransaction(Long transactionId) {
         Transaction exisitngTransaction = transactionRepository.findById(transactionId)
                 .orElseThrow(() -> new ResourceNotFoundException("Transaction not found"));
 

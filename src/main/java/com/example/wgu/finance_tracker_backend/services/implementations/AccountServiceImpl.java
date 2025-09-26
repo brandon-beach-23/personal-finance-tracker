@@ -4,6 +4,7 @@ import com.example.wgu.finance_tracker_backend.DTOs.AccountRequest;
 import com.example.wgu.finance_tracker_backend.DTOs.AccountResponse;
 import com.example.wgu.finance_tracker_backend.exceptions.ResourceNotFoundException;
 import com.example.wgu.finance_tracker_backend.models.Account;
+import com.example.wgu.finance_tracker_backend.models.AccountType;
 import com.example.wgu.finance_tracker_backend.models.SavingsAccount;
 import com.example.wgu.finance_tracker_backend.models.User;
 import com.example.wgu.finance_tracker_backend.repositories.AccountRepository;
@@ -43,9 +44,7 @@ public class AccountServiceImpl implements AccountService {
         if (accountRequest.getAccountType().equals("CHECKING")) {
             newAccount = new Account();
         } else {
-            SavingsAccount savingsAccount = new SavingsAccount();
-            savingsAccount.setInterestRate(accountRequest.getInterestRate());
-            newAccount = savingsAccount;
+            newAccount = new SavingsAccount();
         }
 
         newAccount.setAccountName(accountRequest.getAccountName());
@@ -55,58 +54,48 @@ public class AccountServiceImpl implements AccountService {
 
         Account savedAccount = accountRepository.save(newAccount);
 
-        AccountResponse accountResponse = new AccountResponse();
-        accountResponse.setId(savedAccount.getId());
-        accountResponse.setAccountName(savedAccount.getAccountName());
-        accountResponse.setBalance(savedAccount.getBalance());
-        accountResponse.setUserId(savedAccount.getUser().getId());
-        accountResponse.setAccountType(savedAccount.getAccountType().toString());
+        return convertToDTO(savedAccount);
 
-        return accountResponse;
     }
+
+
 
     @Override
     @Transactional
     public AccountResponse updateAccount(AccountRequest accountRequest, Long id) {
-
-        // Step 1: Find the existing account by its ID and a specific user.
-        User user = userRepository.findById(accountRequest.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found."));
-
+        // 1. Find existing account
         Account existingAccount = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Account not found."));
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found for ID: " + id));
 
-        // Step 2: Ensure the user owns this account for security.
+        // 2. Find the User (Ownership check)
+        User user = userRepository.findById(accountRequest.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found for ID: " + accountRequest.getUserId()));
+
+        // 3. SECURITY CHECK: Ensure requesting user owns the account
         if (!existingAccount.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("Unauthorized: User does not own this account.");
+            throw new SecurityException("Account does not belong to the user.");
         }
 
-        // Step 3: Update common properties from the request DTO.
+        // 4. Type Immutability Check (Cannot change account type on update)
+        AccountType accountTypeEnum = accountRequest.getAccountType();
+        if (accountTypeEnum == null) {
+            throw new IllegalArgumentException("Account type must be provided for update validation.");
+        }
+
+        String requestType = accountTypeEnum.name();
+        String existingType = existingAccount instanceof SavingsAccount ? AccountType.SAVINGS.name() : AccountType.CHECKING.name();
+
+        if (!requestType.equals(existingType)) {
+            throw new IllegalArgumentException("Account type cannot be changed during an update operation.");
+        }
+
+        // 5. Apply Updates
         existingAccount.setAccountName(accountRequest.getAccountName());
-        existingAccount.setBalance(accountRequest.getBalance());
-        existingAccount.setAccountType(accountRequest.getAccountType());
+        existingAccount.setBalance(accountRequest.getBalance() != null ? accountRequest.getBalance() : existingAccount.getBalance());
 
-        // Step 4: Handle specific fields for Savings Accounts.
-        if (existingAccount instanceof SavingsAccount) {
-            ((SavingsAccount) existingAccount).setInterestRate(accountRequest.getInterestRate());
-        }
-
-        // Step 5: Save the updated account and map to DTO.
+        // 6. Save and convert
         Account updatedAccount = accountRepository.save(existingAccount);
-
-        AccountResponse accountResponse = new AccountResponse();
-        accountResponse.setId(updatedAccount.getId());
-        accountResponse.setAccountName(updatedAccount.getAccountName());
-        accountResponse.setBalance(updatedAccount.getBalance());
-        accountResponse.setUserId(updatedAccount.getUser().getId());
-        accountResponse.setAccountType(updatedAccount.getAccountType().toString());
-
-        // Set interest rate for Savings Accounts on the response DTO
-        if (updatedAccount instanceof SavingsAccount) {
-            accountResponse.setInterestRate(((SavingsAccount) updatedAccount).getInterestRate());
-        }
-
-        return accountResponse;
+        return convertToDTO(updatedAccount);
     }
 
     @Override
@@ -120,28 +109,10 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<AccountResponse> getAccountsByUserId(Long userId) {
-        // Step 1: Find the user to ensure they exist.
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found."));
 
-        // Step 2: Use the custom repository method to find all accounts for the user.
-        List<Account> accounts = accountRepository.findByUser(user);
-
-        // Step 3: Map the list of Account entities to a list of AccountResponse DTOs.
-        return accounts.stream()
-                .map(account -> {
-                    AccountResponse dto = new AccountResponse();
-                    dto.setId(account.getId());
-                    dto.setAccountName(account.getAccountName());
-                    dto.setBalance(account.getBalance());
-                    dto.setUserId(account.getUser().getId());
-                    dto.setAccountType(account.getAccountType().toString());
-                    // Check for SavingAccount to include interest rate
-                    if (account instanceof SavingsAccount) {
-                        dto.setInterestRate(((SavingsAccount) account).getInterestRate());
-                    }
-                    return dto;
-                })
+        return accountRepository.findAll().stream()
+                .filter(account -> account.getUser() != null && account.getUser().getId().equals(userId))
+                .map(this::convertToDTO)
                 .collect(Collectors.toList());
 
     }
@@ -149,13 +120,18 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Optional<AccountResponse> getAccountById(Long id) {
-        Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
+
+        return accountRepository.findById(id)
+                .map(this::convertToDTO);
+    }
+
+    private AccountResponse convertToDTO(Account savedAccount) {
         AccountResponse accountResponse = new AccountResponse();
-        accountResponse.setAccountName(account.getAccountName());
-        accountResponse.setBalance(account.getBalance());
-        accountResponse.setAccountType(account.getAccountType().toString());
-        accountResponse.setUserId(account.getUser().getId());
-        return Optional.of(accountResponse);
+        accountResponse.setId(savedAccount.getId());
+        accountResponse.setAccountName(savedAccount.getAccountName());
+        accountResponse.setBalance(savedAccount.getBalance());
+        accountResponse.setAccountType(savedAccount instanceof SavingsAccount ? AccountType.SAVINGS.name() : AccountType.CHECKING.name());
+        accountResponse.setUserId(savedAccount.getUser() != null ? savedAccount.getUser().getId() : null);
+        return accountResponse;
     }
 }

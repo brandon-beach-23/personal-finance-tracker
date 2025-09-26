@@ -8,7 +8,7 @@ public class AccountResponse {
     private String accountName;
     private BigDecimal balance;
     private String accountType; // Using String to represent the AccountType enum for the client
-    private BigDecimal interestRate;
+
 
     // Constructors, Getters, and Setters
     public AccountResponse() {
@@ -20,15 +20,6 @@ public class AccountResponse {
         this.accountName = accountName;
         this.balance = balance;
         this.accountType = accountType;
-    }
-
-    public AccountResponse(Long id, Long userId, String accountName, BigDecimal balance, String accountType, BigDecimal interestRate) {
-        this.id = id;
-        this.userId = userId;
-        this.accountName = accountName;
-        this.balance = balance;
-        this.accountType = accountType;
-        this.interestRate = interestRate;
     }
 
     public Long getId() {
@@ -71,11 +62,4 @@ public class AccountResponse {
         this.accountType = accountType;
     }
 
-    public BigDecimal getInterestRate() {
-        return interestRate;
-    }
-
-    public void setInterestRate(BigDecimal interestRate) {
-        this.interestRate = interestRate;
-    }
 }

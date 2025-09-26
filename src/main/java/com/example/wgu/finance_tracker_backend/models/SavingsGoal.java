@@ -15,11 +15,11 @@ public class SavingsGoal {
     private String goalName;
     private BigDecimal targetAmount;
 
-    @OneToOne
-    @JoinColumn(name = "account_id")
-    private Account account;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "savings_account_id")
+    private SavingsAccount savingsAccount;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -63,4 +63,14 @@ public class SavingsGoal {
     public void setUser(User user) {
         this.user = user;
     }
+
+    public SavingsAccount getSavingsAccount() {
+        return savingsAccount;
+    }
+
+    public void setSavingsAccount(SavingsAccount savingsAccount) {
+        this.savingsAccount = savingsAccount;
+    }
+
+
 }

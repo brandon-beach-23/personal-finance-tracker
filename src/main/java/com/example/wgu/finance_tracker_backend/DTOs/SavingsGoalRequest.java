@@ -5,15 +5,16 @@ import java.math.BigDecimal;
 public class SavingsGoalRequest {
     private String goalName;
     private BigDecimal targetAmount;
-    private Long accountId;
+    private Long savingsAccountId;
+    private Long userId;
 
     public SavingsGoalRequest() {
     }
 
-    public SavingsGoalRequest(String goalName, BigDecimal targetAmount, Long accountId) {
+    public SavingsGoalRequest(String goalName, BigDecimal targetAmount, Long savingsAccountId) {
         this.goalName = goalName;
         this.targetAmount = targetAmount;
-        this.accountId = accountId;
+        this.savingsAccountId = savingsAccountId;
     }
 
     public String getGoalName() {
@@ -32,11 +33,19 @@ public class SavingsGoalRequest {
         this.targetAmount = targetAmount;
     }
 
-    public Long getAccountId() {
-        return accountId;
+    public Long getSavingsAccountId() {
+        return savingsAccountId;
     }
 
-    public void setAccountId(Long accountId) {
-        this.accountId = accountId;
+    public void setSavingsAccountId(Long savingsAccountId) {
+        this.savingsAccountId = savingsAccountId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

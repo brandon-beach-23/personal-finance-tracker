@@ -11,7 +11,7 @@ public class SavingsAccount extends Account{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "savings_account")
+    @OneToOne(mappedBy = "savingsAccount")
     private SavingsGoal savingsGoal;
 
     public SavingsAccount() {

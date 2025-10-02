@@ -5,6 +5,7 @@ import java.time.LocalDate;
 
 public class TransactionRequest {
 
+    private Long id;
     private String name;
     private BigDecimal amount;
     private String categoryName;
@@ -22,6 +23,24 @@ public class TransactionRequest {
         this.transactionType = transactionType;
         this.accountId = accountId;
         this.transactionDate = transactionDate;
+    }
+
+    public TransactionRequest(Long id, String name, BigDecimal amount, String categoryName, String transactionType, Long accountId, LocalDate transactionDate) {
+        this.id = id;
+        this.name = name;
+        this.amount = amount;
+        this.categoryName = categoryName;
+        this.transactionType = transactionType;
+        this.accountId = accountId;
+        this.transactionDate = transactionDate;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getAccountId() {

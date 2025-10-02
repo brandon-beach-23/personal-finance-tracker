@@ -54,6 +54,10 @@ public class TransactionServiceImpl implements TransactionService {
             throw new IllegalArgumentException("Invalid transaction type: " + transactionRequest.getTransactionType());
         }
 
+        if(transactionRequest.getAmount() == null || transactionRequest.getAmount().compareTo(BigDecimal.ZERO) <= 0){
+            throw new IllegalArgumentException("Invalid amount for transaction");
+        }
+
         //Determine if the transaction will debit or credit the account
         //Then save the account with the updated balance
         if (transactionType == TransactionType.DEBIT) {
@@ -98,6 +102,10 @@ public class TransactionServiceImpl implements TransactionService {
         Account account = existingTransaction.getAccount();
         Category newCategory = categoryRepository.findByName(transactionRequest.getCategoryName())
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+
+        if(transactionRequest.getAmount() == null || transactionRequest.getAmount().compareTo(BigDecimal.ZERO) <= 0){
+            throw new IllegalArgumentException("Invalid amount for transaction");
+        }
 
         //Reverse the old transaction
         if (existingTransaction.getTransactionType() == TransactionType.DEBIT) {

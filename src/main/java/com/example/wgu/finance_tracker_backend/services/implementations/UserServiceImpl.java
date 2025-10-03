@@ -65,16 +65,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserResponse> login(UserLoginRequest userLoginRequest) {
-        return Optional.empty();
-    }
-
-    @Override
-    public void updatePassword(Long userId, String newPassword) {
-
-    }
-
-    @Override
     public void deleteUser(Long userId) {
 
     }

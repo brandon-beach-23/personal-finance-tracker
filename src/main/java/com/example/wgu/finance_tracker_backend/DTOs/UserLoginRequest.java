@@ -1,7 +1,11 @@
 package com.example.wgu.finance_tracker_backend.DTOs;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class UserLoginRequest {
+    @NotBlank
     private String username;
+    @NotBlank
     private String password;
 
     public UserLoginRequest() {

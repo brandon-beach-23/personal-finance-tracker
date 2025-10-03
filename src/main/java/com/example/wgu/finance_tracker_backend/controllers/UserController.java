@@ -1,8 +1,10 @@
 package com.example.wgu.finance_tracker_backend.controllers;
 
 import com.example.wgu.finance_tracker_backend.DTOs.UserLoginRequest;
+import com.example.wgu.finance_tracker_backend.DTOs.UserLoginResponse;
 import com.example.wgu.finance_tracker_backend.DTOs.UserRegistrationRequest;
 import com.example.wgu.finance_tracker_backend.DTOs.UserResponse;
+import com.example.wgu.finance_tracker_backend.services.interfaces.AuthService;
 import com.example.wgu.finance_tracker_backend.services.interfaces.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +17,12 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
+    private final AuthService authService;
 
     // Dependency Injection via Constructor
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AuthService authService) {
         this.userService = userService;
+        this.authService = authService;
     }
 
     // AUTH: POST /api/users/register
@@ -29,12 +33,12 @@ public class UserController {
     }
 
 //    // AUTH: POST /api/users/login
-//    @PostMapping("/login")
-//    public ResponseEntity<UserResponse> loginUser(@RequestBody UserLoginRequest loginRequest) {
-//        Optional<UserResponse> userResponse = userService.login(loginRequest);
-//        // Assuming successful login returns the user data and a token (implicitly handled by security layer later)
-//        return ResponseEntity.ok(userResponse);
-//    }
+    @PostMapping("/login")
+    public ResponseEntity<UserLoginResponse> loginUser(@RequestBody UserLoginRequest loginRequest) {
+        UserLoginResponse userLoginResponse = authService.login(loginRequest);
+        // Assuming successful login returns the user data and a token (implicitly handled by security layer later)
+        return ResponseEntity.ok(userLoginResponse);
+    }
 
     // MANAGEMENT: PUT /api/users/{id}/password
 //    @PutMapping("/{id}/password")

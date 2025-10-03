@@ -11,8 +11,6 @@ import java.util.Optional;
 public interface UserService {
 
     UserResponse registerUser(UserRegistrationRequest userRegistrationRequest);
-    Optional<UserResponse> login(UserLoginRequest userLoginRequest);
-    void updatePassword(Long userId, String newPassword);
     void deleteUser(Long userId);
 
 }

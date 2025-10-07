@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface UserService {
 
-    UserResponse registerUser(UserRegistrationRequest userRegistrationRequest);
+
     void deleteUser(Long userId);
 
 }

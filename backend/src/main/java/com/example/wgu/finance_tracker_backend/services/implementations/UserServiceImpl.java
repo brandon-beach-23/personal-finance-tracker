@@ -32,39 +32,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse registerUser(UserRegistrationRequest userRegistrationRequest) {
-
-        if (userRegistrationRequest == null || userRegistrationRequest.getEmail() == null || userRegistrationRequest.getPassword() == null || userRegistrationRequest.getUsername() == null) {
-           throw new InvalidRegistrationDataException("UserRegistrationRequest is null or empty");
-       }
-
-       if (userRepository.findByEmail(userRegistrationRequest.getEmail()).isPresent()) {
-           throw new UserAlreadyExistsException("User with email address " + userRegistrationRequest.getEmail() + " already exists");
-       }
-
-       if (userRepository.findByUserName(userRegistrationRequest.getUsername()).isPresent()) {
-           throw new UserAlreadyExistsException("User with name " + userRegistrationRequest.getUsername() + " already exists");
-       }
-
-       User user = new User();
-       user.setEmail(userRegistrationRequest.getEmail());
-       user.setUserName(userRegistrationRequest.getUsername());
-
-       String hashedPassword = passwordEncoder.encode(userRegistrationRequest.getPassword());
-
-       user.setPassword(hashedPassword);
-
-       User savedUser = userRepository.save(user);
-
-       UserResponse userResponse = new UserResponse();
-       userResponse.setId(savedUser.getId());
-       userResponse.setUsername(savedUser.getUserName());
-       userResponse.setEmail(savedUser.getEmail());
-
-       return userResponse;
-    }
-
-    @Override
     public void deleteUser(Long userId) {
 
     }

@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import {DashboardComponent} from "./dashboard/dashboard.component";
-import {RegistrationComponent} from "./registration/registration.component";
+import {RegistrationComponent} from  './auth/components/registration/registration.component';
 
 export const routes: Routes = [
   // Route 1: Default path redirects to the dashboard
@@ -10,7 +10,7 @@ export const routes: Routes = [
    { path: 'dashboard', component: DashboardComponent },
 
   //Route 3: User Registration
-  { path: 'registration', component: RegistrationComponent}
+  { path: 'register', component: RegistrationComponent}
 
   // Route 3: Transactions List
   // { path: 'transactions', component: TransactionListComponent },

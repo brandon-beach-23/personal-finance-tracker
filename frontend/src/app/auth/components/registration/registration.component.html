@@ -1,0 +1,85 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+
+      <h2 class="mb-4 text-center">Create Your Account</h2>
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="card p-4 shadow">
+
+        <div class="mb-3">
+          <label for="username" class="form-label">Username</label>
+          <input id="username" type="text" formControlName="username"
+                 class="form-control"
+                 [class.is-invalid]="registerForm.get('username')?.invalid && registerForm.get('username')?.touched">
+
+          <div *ngIf="registerForm.get('username')?.invalid && registerForm.get('username')?.touched" class="invalid-feedback">
+            Username is required.
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input id="email" type="email" formControlName="email"
+                 class="form-control"
+                 [class.is-invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+
+          <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="invalid-feedback">
+            Valid email is required.
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input id="password" type="password" formControlName="password" (input)="onPasswordInput()"
+                 class="form-control"
+                 [class.is-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+        </div>
+
+        <div class="mb-3">
+          <label for="confirmPassword" class="form-label">Confirm Password</label>
+          <input id="confirmPassword" type="password" formControlName="confirmPassword"
+                 class="form-control"
+                 [class.is-invalid]="registerForm.errors?.['passwordsMismatch'] && registerForm.get('confirmPassword')?.touched">
+
+          <div *ngIf="registerForm.errors?.['passwordsMismatch'] && registerForm.get('confirmPassword')?.touched" class="invalid-feedback">
+            Passwords do not match.
+          </div>
+        </div>
+
+        <div class="d-grid gap-2">
+          <button type="submit" [disabled]="registerForm.invalid" class="btn btn-success btn-lg">
+            Register
+          </button>
+          <button type="button" (click)="cancel()" class="btn btn-outline-secondary">
+            Cancel
+          </button>
+        </div>
+      </form>
+
+      <div class="card p-3 mt-4">
+        <h5 class="card-title">Password Requirements</h5>
+        <ul class="list-unstyled mb-0">
+          <li [class.text-success]="passwordRequirements.isMinLength" [class.text-danger]="!passwordRequirements.isMinLength">
+            <i [class.bi-check-circle-fill]="passwordRequirements.isMinLength" [class.bi-x-circle-fill]="!passwordRequirements.isMinLength" class="bi me-2"></i>Minimum 8 characters
+          </li>
+          <li [class.text-success]="passwordRequirements.hasLowercase" [class.text-danger]="!passwordRequirements.hasLowercase">
+            <i [class.bi-check-circle-fill]="passwordRequirements.hasLowercase" [class.bi-x-circle-fill]="!passwordRequirements.hasLowercase" class="bi me-2"></i>One lowercase letter
+          </li>
+          <li [class.text-success]="passwordRequirements.hasUpperCase" [class.text-danger]="!passwordRequirements.hasUpperCase">
+            <i [class.bi-check-circle-fill]="passwordRequirements.hasUpperCase" [class.bi-x-circle-fill]="!passwordRequirements.hasUpperCase" class="bi me-2"></i>One uppercase letter
+          </li>
+          <li [class.text-success]="passwordRequirements.hasDigit" [class.text-danger]="!passwordRequirements.hasDigit">
+            <i [class.bi-check-circle-fill]="passwordRequirements.hasDigit" [class.bi-x-circle-fill]="!passwordRequirements.hasDigit" class="bi me-2"></i>One number
+          </li>
+          <li [class.text-success]="passwordRequirements.hasSpecialChar" [class.text-danger]="!passwordRequirements.hasSpecialChar">
+            <i [class.bi-check-circle-fill]="passwordRequirements.hasSpecialChar" [class.bi-x-circle-fill]="!passwordRequirements.hasSpecialChar" class="bi me-2"></i>One special character
+          </li>
+          <li [class.text-success]="passwordRequirements.passwordsMatch" [class.text-danger]="!passwordRequirements.passwordsMatch">
+            <i [class.bi-check-circle-fill]="passwordRequirements.passwordsMatch" [class.bi-x-circle-fill]="!passwordRequirements.passwordsMatch" class="bi me-2"></i>Passwords match
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -59,9 +59,6 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public UserLoginResponse login(UserLoginRequest loginRequest) {
-       if (loginRequest.getUsername() == null || loginRequest.getPassword() == null) {
-            throw new InvalidCredentialsException("Invalid credentials");
-        }
 
        User user = userRepository.findByUserName(loginRequest.getUsername())
                .orElseThrow(() -> new ResourceNotFoundException("User not found"));

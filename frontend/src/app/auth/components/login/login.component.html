@@ -1,0 +1,43 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+
+      <h2 class="mb-4 text-center">Login</h2>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onsubmit()" class="card p-4 shadow">
+
+        <div class="mb-3">
+          <label for="username" class="form-label">Username</label>
+          <input id="username" type="text" formControlName="username"
+                 class="form-control"
+                 [class.is-invalid]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched">
+
+          <div *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched" class="invalid-feedback">
+            Username is required.
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input id="password" type="password" formControlName="password"
+                 class="form-control"
+                 [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+
+          <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="invalid-feedback">
+            Password is required.
+          </div>
+        </div>
+
+        <div class="d-grid gap-2">
+          <button type="submit" [disabled]="loginForm.invalid" class="btn btn-success btn-lg">
+            Login
+          </button>
+          <button type="button" (click)="goToRegister()" class="btn btn-outline-secondary">
+            Register
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

@@ -4,6 +4,8 @@ import com.example.wgu.finance_tracker_backend.DTOs.UserLoginRequest;
 import com.example.wgu.finance_tracker_backend.DTOs.UserLoginResponse;
 import com.example.wgu.finance_tracker_backend.DTOs.UserRegistrationRequest;
 import com.example.wgu.finance_tracker_backend.DTOs.UserResponse;
+import com.example.wgu.finance_tracker_backend.exceptions.InvalidCredentialsException;
+import com.example.wgu.finance_tracker_backend.exceptions.ResourceNotFoundException;
 import com.example.wgu.finance_tracker_backend.exceptions.UserAlreadyExistsException;
 import com.example.wgu.finance_tracker_backend.services.interfaces.AuthService;
 import jakarta.validation.Valid;
@@ -40,9 +42,14 @@ public class AuthConttroller {
 
     //    // AUTH: POST /api/users/login
     @PostMapping("/login")
-    public ResponseEntity<UserLoginResponse> loginUser(@RequestBody UserLoginRequest loginRequest) {
-        UserLoginResponse userLoginResponse = authService.login(loginRequest);
-        // Assuming successful login returns the user data and a token (implicitly handled by security layer later)
-        return ResponseEntity.ok(userLoginResponse);
+    public ResponseEntity<?> loginUser(@Valid @RequestBody UserLoginRequest loginRequest) {
+        try {
+            UserLoginResponse userLoginResponse = authService.login(loginRequest);
+            return new ResponseEntity<>(userLoginResponse, HttpStatus.OK);
+        } catch (ResourceNotFoundException | InvalidCredentialsException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
+        } catch (Exception ex) {
+            return new ResponseEntity<>("Login failed due to server error", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

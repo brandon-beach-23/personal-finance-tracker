@@ -2,22 +2,20 @@ import { Routes } from '@angular/router';
 import {DashboardComponent} from "./dashboard/dashboard.component";
 import {RegistrationComponent} from  './auth/components/registration/registration.component';
 import {LoginComponent} from "./auth/components/login/login.component";
+import {AuthGuard} from "./auth/auth.guard";
 
 export const routes: Routes = [
-  // Route 1: Default path redirects to the dashboard
+  // Default path if logged in
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 
-  // Route 2: Dashboard
-   { path: 'dashboard', component: DashboardComponent },
-
-  //Route 3: User Registration
+  // Public Routes
   { path: 'register', component: RegistrationComponent},
+  { path: 'login', component: LoginComponent },
 
-  // Route 3: Transactions List
-  // { path: 'transactions', component: TransactionListComponent },
+  // Protected Routes (Uses AuthGuard)
+   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] }
 
-  // Route 4: User Login
-   { path: 'login', component: LoginComponent }
+
 
   // Route 5: Catch-all for 404
   // { path: '**', component: NotFoundComponent }

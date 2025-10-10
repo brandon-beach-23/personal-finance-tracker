@@ -14,6 +14,9 @@ import com.example.wgu.finance_tracker_backend.security.JwtUtil;
 import com.example.wgu.finance_tracker_backend.services.interfaces.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,12 +28,14 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
 
     @Autowired
-    public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+    public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
+        this.authenticationManager = authenticationManager;
     }
 
     @Override
@@ -60,19 +65,25 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public UserLoginResponse login(UserLoginRequest loginRequest) {
 
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getUsername(),
+                            loginRequest.getPassword()
+                    )
+            );
+        } catch (Exception e) {
+            throw new InvalidCredentialsException("Invalid username or password");
+        }
        User user = userRepository.findByUserName(loginRequest.getUsername())
                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-       if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-           throw new InvalidCredentialsException("Invalid credentials");
-       } else {
-           String token = jwtUtil.createJwtToken(user);
-           UserLoginResponse userLoginResponse = new UserLoginResponse();
-           userLoginResponse.setToken(token);
-           userLoginResponse.setUsername(user.getUserName());
-           return userLoginResponse;
-       }
 
+       String token = jwtUtil.createJwtToken(user);
+       UserLoginResponse userLoginResponse = new UserLoginResponse();
+       userLoginResponse.setToken(token);
+       userLoginResponse.setUsername(user.getUserName());
+       return userLoginResponse;
     }
 
     public UserResponse convertToDTO(User user) {

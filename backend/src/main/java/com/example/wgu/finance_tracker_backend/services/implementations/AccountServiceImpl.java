@@ -117,9 +117,13 @@ public class AccountServiceImpl implements AccountService {
 
     }
 
+    @Override
+    public List<AccountResponse> getAccountsByUsername(String name) {
+        return List.of();
+    }
 
     @Override
-    public Optional<AccountResponse> getAccountById(Long id) {
+    public Optional<AccountResponse> getAccountById(Long id, String principal) {
 
         return accountRepository.findById(id)
                 .map(this::convertToDTO);

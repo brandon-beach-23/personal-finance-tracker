@@ -14,6 +14,7 @@ public interface AccountService {
     AccountResponse updateAccount(AccountRequest accountRequest, Long id);
     void deleteAccount(Long id);
     List<AccountResponse> getAccountsByUserId(Long id);
-    Optional<AccountResponse> getAccountById(Long id);
+    Optional<AccountResponse> getAccountById(Long id, String principal);
 
+    List<AccountResponse> getAccountsByUsername(String name);
 }

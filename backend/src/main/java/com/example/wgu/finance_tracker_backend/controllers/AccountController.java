@@ -44,24 +44,33 @@ public class AccountController {
 //        return ResponseEntity.noContent().build();
 //    }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<AccountResponse> getAccountById(@PathVariable Long id, Principal principal) {
-        // You'll need to modify the service layer to verify ownership via principal.getName()
-        Optional<AccountResponse> accountResponse = accountService.getAccountById(id, principal.getName());
-        return accountResponse.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
+//    @GetMapping("/{id}")
+//    public ResponseEntity<AccountResponse> getAccountById(@PathVariable Long id, Principal principal) {
+//        // You'll need to modify the service layer to verify ownership via principal.getName()
+//        Optional<AccountResponse> accountResponse = accountService.getAccountById(id, principal.getName());
+//        return accountResponse.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+//    }
+//
+//    @GetMapping
+//    // FIX: Removed @RequestParam("userId") and replaced with Principal
+//    public ResponseEntity<List<AccountResponse>> getAccountsByUserId(Principal principal) {
+//        // The service layer must now accept the username (string) or look up the ID internally
+//        if (principal == null) {
+//            // Should be handled by SecurityConfig, but as a safeguard:
+//            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+//        }
+//
+//
+//        List<AccountResponse> accountResponses = accountService.getAccountsByUsername(principal.getName());
+//        return ResponseEntity.ok(accountResponses);
+//    }
 
     @GetMapping
-    // FIX: Removed @RequestParam("userId") and replaced with Principal
-    public ResponseEntity<List<AccountResponse>> getAccountsByUserId(Principal principal) {
-        // The service layer must now accept the username (string) or look up the ID internally
+    public ResponseEntity<List<AccountResponse>> getAccountsByUsername(Principal principal) {
         if (principal == null) {
-            // Should be handled by SecurityConfig, but as a safeguard:
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-
-
-        List<AccountResponse> accountResponses = accountService.getAccountsByUsername(principal.getName());
-        return ResponseEntity.ok(accountResponses);
+        List<AccountResponse> accounts = accountService.getAccountsByUsername(principal.getName());
+        return new ResponseEntity<>(accounts, HttpStatus.OK);
     }
 }

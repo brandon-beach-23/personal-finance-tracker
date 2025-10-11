@@ -119,7 +119,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<AccountResponse> getAccountsByUsername(String name) {
-        return List.of();
+        return accountRepository.findByUserUsername(name).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override

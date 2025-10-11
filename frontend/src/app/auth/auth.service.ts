@@ -26,9 +26,8 @@ export class AuthService {
   login(credentials: LoginRequest): Observable<any> {
     const url = `${this.apiUrl}/login`;
     return this.http.post<LoginResponse>(url, credentials).pipe(tap(response => {
-      localStorage.setItem('jwt_token', response.token);
-      localStorage.setItem('username', response.username);
-      this.router.navigate(['/dashboard'])
+      localStorage.setItem(this.TOKEN_KEY, response.token);
+      localStorage.setItem(this.USERNAME_KEY, response.username);
       })
     );
   }
@@ -45,7 +44,7 @@ export class AuthService {
 
   isLoggedIn(): boolean {
     const token = this.getToken();
-    return !!token && this.isTokenExpired(token);
+    return !!token && !this.isTokenExpired(token);
   }
 
   private isTokenExpired(token: string): boolean {

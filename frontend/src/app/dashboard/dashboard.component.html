@@ -1,1 +1,99 @@
-<p>dashboard works!</p>
+<header class="p-3 bg-light border-bottom">
+  <!-- Key Change: Removed justify-content-between. Using d-flex align-items-center for the row. -->
+  <nav class="container-fluid d-flex align-items-center">
+
+    <!-- 1. LEFT: Welcome Heading -->
+    <h3 class="mb-0">
+      Welcome, {{ getCurrentUserName() }}
+    </h3>
+
+    <!-- 2. CENTER: Nav Links. mx-auto pushes this element to the absolute center. -->
+    <ul class="nav nav-pills mx-auto">
+      <li class="nav-item">
+        <a routerLink="/dashboard" class="nav-link active">Dashboard</a>
+      </li>
+      <li class="nav-item">
+        <a routerLink="/investments" class="nav-link">Investment Simulation</a>
+      </li>
+    </ul>
+
+    <!-- 3. RIGHT: Logout Button. The centered pills push this element to the far right. -->
+    <button class="btn btn-danger" (click) = logout()>
+      Logout
+    </button>
+  </nav>
+</header>
+
+<main class="container py-4">
+
+  <!-- First Row: Checking Accounts, Transactions, and Spending Chart -->
+  <div class="row g-4">
+
+    <!-- Column 1: Checking Accounts List -->
+    <div class="col-12 col-lg-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-primary">Checking Accounts</h5>
+          <!-- Placeholder for repeated account list -->
+          <div class="list-group list-group-flush mt-3">
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+              <div>Account Name A</div>
+              <span class="fw-bold">$1,250.00</span>
+            </div>
+            <!-- ... more accounts ... -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Column 2: Transactions Detail -->
+    <div class="col-12 col-lg-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-primary">Transactions for [Account Name]</h5>
+          <!-- Transaction Header Row -->
+          <div class="d-flex justify-content-between fw-bold border-bottom pb-2 mb-2">
+            <div>Description</div>
+            <div>Amount</div>
+          </div>
+          <!-- Placeholder transaction items -->
+          <div class="d-flex justify-content-between py-1">
+            <span>Groceries</span>
+            <span class="text-danger">($125.50)</span>
+          </div>
+          <!-- ... more transactions ... -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Column 3: Spending Pie Chart -->
+    <div class="col-12 col-lg-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-primary">Spending Breakdown</h5>
+          <div class="text-center mt-5">
+            [Placeholder for Pie Chart]
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Second Row: Savings Goal Visualization -->
+  <div class="row g-4 mt-4">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-success">Savings Goal Progress</h5>
+          <div class="p-3">
+            [Placeholder for Savings Goal vs. Current Balance Graph]
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+
+
+

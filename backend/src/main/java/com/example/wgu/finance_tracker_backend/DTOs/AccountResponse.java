@@ -1,8 +1,11 @@
 package com.example.wgu.finance_tracker_backend.DTOs;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.math.BigDecimal;
 
 public class AccountResponse {
+    @JsonProperty("accountId")
     private Long id;
     private Long userId;
     private String accountName;

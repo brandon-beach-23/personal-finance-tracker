@@ -7,30 +7,16 @@ import java.util.List;
 
 @Entity
 public class SavingsAccount extends Account{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @OneToOne(mappedBy = "savingsAccount")
+    @OneToOne(mappedBy = "savingsAccount", cascade = CascadeType.ALL, orphanRemoval = true)
     private SavingsGoal savingsGoal;
 
     public SavingsAccount() {
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-
     public SavingsGoal getSavingsGoal() {
         return savingsGoal;
     }
-
-
     public void setSavingsGoal(SavingsGoal savingsGoal) {
         this.savingsGoal = savingsGoal;
     }

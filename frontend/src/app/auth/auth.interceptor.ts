@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { AuthService } from './auth.service';
+import { AuthService } from '../auth/auth.service'; // Assuming path is correct
 import { Router } from '@angular/router';
 
 @Injectable()
@@ -11,7 +11,11 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(private authService: AuthService, private router: Router) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    const token =this.authService.getToken();
+    const token = this.authService.getToken();
+
+    // --- ADD THIS LOG LINE ---
+    console.log('AuthInterceptor: Retrieved Token:', token ? 'Token Found' : 'No Token Found');
+    // -------------------------
 
     if (token) {
       request = request.clone({

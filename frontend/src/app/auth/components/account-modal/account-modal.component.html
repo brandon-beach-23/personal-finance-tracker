@@ -1,0 +1,106 @@
+<!-- Overlay: This provides the modal background effect -->
+<div class="modal-overlay" (click)="close()"></div>
+
+<!-- Modal Content Container -->
+<div class="modal-dialog-centered">
+  <div class="modal-content">
+
+    <h2 class="mb-4 text-center text-primary">Add New Account</h2>
+
+    <!-- Response Message Area -->
+    <div *ngIf="responseMessage"
+         class="alert text-center fw-bold"
+         [class.alert-success]="responseMessage.includes('successfully')"
+         [class.alert-danger]="responseMessage.includes('failed')">
+      {{ responseMessage }}
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="addAccountForm" (ngSubmit)="onSubmit()" class="card p-4 shadow-lg border-0">
+
+      <div class="mb-3">
+        <label for="accountName" class="form-label">Account Name</label>
+        <input id="accountName" type="text" formControlName="accountName"
+               class="form-control"
+               placeholder="e.g., Chase Checking"
+               [class.is-invalid]="addAccountForm.get('accountName')?.invalid && addAccountForm.get('accountName')?.touched">
+        <div *ngIf="addAccountForm.get('accountName')?.invalid && addAccountForm.get('accountName')?.touched" class="invalid-feedback">
+          Account name is required.
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="accountBalance" class="form-label">Initial Balance ($)</label>
+        <!-- Type number is critical for financial data input -->
+        <input id="accountBalance" type="number" formControlName="accountBalance"
+               class="form-control"
+               placeholder="0.00"
+               [class.is-invalid]="addAccountForm.get('accountBalance')?.invalid && addAccountForm.get('accountBalance')?.touched">
+        <div *ngIf="addAccountForm.get('accountBalance')?.invalid && addAccountForm.get('accountBalance')?.touched" class="invalid-feedback">
+          Balance is required and must be a valid number.
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label for="accountType" class="form-label">Account Type</label>
+        <!-- Using a select for controlled input is much safer -->
+        <select id="accountType" formControlName="accountType"
+                class="form-select"
+                [class.is-invalid]="addAccountForm.get('accountType')?.invalid && addAccountForm.get('accountType')?.touched">
+          <option value="" disabled>Select a type...</option>
+          <option *ngFor="let type of accountTypes" [value]="type">{{ type | titlecase }}</option>
+        </select>
+        <div *ngIf="addAccountForm.get('accountType')?.invalid && addAccountForm.get('accountType')?.touched" class="invalid-feedback">
+          Account type is required.
+        </div>
+      </div>
+
+      <div class="d-grid gap-2">
+        <button type="submit" [disabled]="addAccountForm.invalid" class="btn btn-success btn-lg shadow-sm">
+          <i class="bi bi-save me-2"></i> Save Account
+        </button>
+        <button type="button" (click)="close()" class="btn btn-outline-secondary">
+          Cancel
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<style>
+  /* Basic Modal Styling for a nice overlay effect */
+  :host {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1050; /* Above typical navbar/dashboard elements */
+  }
+  .modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+  .modal-dialog-centered {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 450px;
+    padding: 1rem;
+    z-index: 1055;
+  }
+  .modal-content {
+    background: #fff;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
+</style>
+

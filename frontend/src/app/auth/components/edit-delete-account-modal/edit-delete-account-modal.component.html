@@ -1,0 +1,179 @@
+<!-- 1. Overlay: This provides the modal background effect and click-to-close -->
+<div class="modal-overlay" (click)="close()"></div>
+
+<!-- 2. Modal Content Container -->
+<div class="modal-dialog-centered" (click)="$event.stopPropagation()">
+  <!-- The main content container is now the unified card -->
+  <div class="modal-content">
+
+    <!-- Content is now unified within a single padded section -->
+    <div class="p-4">
+
+      <!-- Unified Title -->
+      <h2 class="mb-2 text-center text-primary">
+        @if (isConfirmingDelete()) {
+          Confirm Account Deletion
+        } @else {
+          Edit or Delete Account
+        }
+      </h2>
+
+      <!-- Header Instructions -->
+      <p class="text-muted small mb-4 text-center">
+        @if (isConfirmingDelete()) {
+          Are you absolutely sure you want to delete account '{{ editForm.get('accountName')?.value }}'? This cannot be undone.
+        } @else {
+          Select an account to modify its details.
+        }
+      </p>
+
+      <!-- Status Message Area (Moved inside the card) -->
+      @if (statusMessage(); as message) {
+        <div [ngClass]="{'alert-danger': message.includes('Error') || message.includes('failed'),
+                          'alert-success': message.includes('successfully')}"
+             class="alert text-center fw-bold" role="alert">
+          <span class="d-block">{{ message }}</span>
+        </div>
+      }
+
+      @if (!isConfirmingDelete()) {
+        <!-- Account Selection Dropdown -->
+        <div class="mb-4">
+          <label for="accountId" class="form-label small fw-semibold">Select Account</label>
+          <select id="accountId" (change)="onAccountSelected($event)"
+                  class="form-select form-control-sm rounded shadow-sm">
+            <option [value]="null" disabled selected>-- Choose an account --</option>
+
+            @for (account of accounts(); track account.accountId) {
+              <option [value]="account.accountId">
+                {{ account.accountName }} ({{ account.accountType | titlecase }})
+              </option>
+            }
+          </select>
+        </div>
+
+        <!-- Account Edit Form -->
+          <!-- Note: This form contains the input fields, but the buttons are outside its scope to keep the layout flexible -->
+        <form [formGroup]="editForm">
+          <!-- Account Name -->
+          <div class="mb-3">
+            <label for="accountName" class="form-label small fw-semibold">Account Name</label>
+            <input type="text" id="accountName" formControlName="accountName" placeholder="e.g., My Primary Checking"
+                   class="form-control rounded shadow-sm"
+                   [class.is-invalid]="editForm.get('accountName')?.invalid && editForm.get('accountName')?.touched"
+                   [readonly]="!selectedAccountId()">
+          </div>
+
+          <!-- Account Type -->
+          <div class="mb-3">
+            <label for="accountType" class="form-label small fw-semibold">Account Type</label>
+            <select id="accountType" formControlName="accountType"
+                    class="form-select form-control-sm rounded shadow-sm"
+                    [attr.disabled]="!selectedAccountId() ? true : null">
+              <option value="CHECKING">Checking</option>
+              <option value="SAVINGS">Savings</option>
+            </select>
+          </div>
+
+          <!-- Account Balance (Read-only) -->
+          <div class="mb-4">
+            <label for="balance" class="form-label small fw-semibold">Current Balance</label>
+            <input type="text" id="balance" formControlName="balance" readonly
+                   class="form-control bg-light text-end font-monospace rounded shadow-sm"
+                   placeholder="0.00">
+            <p class="mt-1 form-text text-primary">Note: Balance can only be changed via transactions.</p>
+          </div>
+        </form>
+      }
+
+      <!-- Footer Actions (Unified Button Block - Placed right after the form/content) -->
+      <div class="d-flex justify-content-between gap-2 pt-3">
+        <button (click)="onCancel()" type="button" class="btn btn-outline-secondary flex-shrink-0">
+          @if (isConfirmingDelete()) {
+            No, Keep Account
+          } @else {
+            Cancel
+          }
+        </button>
+
+        <div class="d-flex gap-2">
+          @if (!isConfirmingDelete()) {
+            <!-- Initiate Delete Button -->
+            <button (click)="onConfirmDeleteInit()" [disabled]="!selectedAccountId() || isSubmitting()"
+                    class="btn btn-danger">
+              Delete Account
+            </button>
+
+            <!-- Update Button -->
+            <button (click)="onUpdate()" [disabled]="!selectedAccountId() || editForm.invalid || !editForm.dirty || isSubmitting()"
+                    class="btn btn-success">
+              @if (isSubmitting() && action() === 'update') {
+                Updating...
+              } @else {
+                Update Account
+              }
+            </button>
+          } @else {
+            <!-- Confirm Delete Button -->
+            <button (click)="onDelete()" [disabled]="isSubmitting()"
+                    class="btn btn-danger btn-lg shadow-sm">
+              @if (isSubmitting() && action() === 'delete') {
+                Deleting...
+              } @else {
+                Yes, Delete Permanently
+              }
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Basic Modal Styling for a nice overlay effect (Copied from Add Modal, fixed z-index) */
+  :host {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1050;
+  }
+  .modal-overlay {
+    position: absolute; /* Changed from fixed to absolute to align with :host:fixed */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Use the darker color for the backdrop */
+    background-color: rgba(33, 37, 41, 0.95);
+  }
+  .modal-dialog-centered {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 450px; /* Matched width of Add Modal */
+    padding: 1rem;
+    z-index: 1055;
+  }
+  .modal-content {
+    background: #fff;
+    border-radius: 0.75rem;
+    /* Removed padding here, as the inner div handles it now */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
+  /* The inner div takes the padding, giving it the clean card look */
+  .card {
+    background: none;
+    box-shadow: none !important;
+  }
+
+  /* Ensure form buttons look good */
+  .btn-success {
+    background-color: var(--bs-success);
+    border-color: var(--bs-success);
+  }
+</style>

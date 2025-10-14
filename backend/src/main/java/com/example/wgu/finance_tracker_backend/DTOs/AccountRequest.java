@@ -2,6 +2,7 @@ package com.example.wgu.finance_tracker_backend.DTOs;
 
 import com.example.wgu.finance_tracker_backend.models.AccountType;
 import com.example.wgu.finance_tracker_backend.models.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -9,8 +10,9 @@ import java.util.Optional;
 public class AccountRequest {
 
     private String accountName;
+    @JsonProperty("accountBalance")
     private BigDecimal balance;
-    private AccountType accountType;
+    private String accountType;
     private Long userId;
 
 
@@ -18,15 +20,7 @@ public class AccountRequest {
 
     }
 
-    public AccountRequest(String accountName, BigDecimal balance, AccountType accountType, Long userId) {
-        this.accountName = accountName;
-        this.balance = balance;
-        this.accountType = accountType;
-        this.userId = userId;
-    }
-
-
-    public String getAccountName() {
+   public String getAccountName() {
         return accountName;
     }
 
@@ -42,11 +36,11 @@ public class AccountRequest {
         this.balance = balance;
     }
 
-    public AccountType getAccountType() {
+    public String getAccountType() {
         return accountType;
     }
 
-    public void setAccountType(AccountType accountType) {
+    public void setAccountType(String accountType) {
         this.accountType = accountType;
     }
 

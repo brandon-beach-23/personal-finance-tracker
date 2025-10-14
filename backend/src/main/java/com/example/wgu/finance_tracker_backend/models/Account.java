@@ -19,7 +19,7 @@ public class Account implements Transactionable {
     @Enumerated(EnumType.STRING)
     private AccountType accountType;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -27,14 +27,6 @@ public class Account implements Transactionable {
     private List<Transaction> transactions = new ArrayList<>();
 
     public Account() {
-    }
-
-    public Account(Long id, User user, String accountName, BigDecimal balance, AccountType accountType) {
-        this.id = id;
-        this.user = user;
-        this.accountName = accountName;
-        this.balance = balance;
-        this.accountType = accountType;
     }
 
     public Account(Long id, String accountName, BigDecimal balance, List<Transaction> transactions) {

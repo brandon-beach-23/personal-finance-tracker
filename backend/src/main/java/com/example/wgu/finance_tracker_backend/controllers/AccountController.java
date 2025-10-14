@@ -23,33 +23,34 @@ public class AccountController {
         this.accountService = accountService;
     }
 
-//    @PostMapping
-//    public ResponseEntity<AccountResponse> createAccount(@RequestBody AccountRequest accountRequest, Principal principal) {
-//        // Use principal.getName() to get the authenticated username
-//        AccountResponse accountResponse = accountService.createAccountForUser(accountRequest, principal.getName());
-//        return new ResponseEntity<>(accountResponse, HttpStatus.CREATED);
-//    }
+    @PostMapping
+    public ResponseEntity<AccountResponse> createAccount(@RequestBody AccountRequest accountRequest, Principal principal) {
+        // Use principal.getName() to get the authenticated username
+        String username = principal.getName();
+        AccountResponse accountResponse = accountService.createAccount(accountRequest, username);
+        return new ResponseEntity<>(accountResponse, HttpStatus.CREATED);
+    }
 
-//    @PutMapping("/{id}")
-//    public ResponseEntity<AccountResponse> updateAccount(@PathVariable Long id, @RequestBody AccountRequest accountRequest, Principal principal) {
-//        // You'll need to modify the service layer to verify ownership via principal.getName()
-//        AccountResponse accountResponse = accountService.updateAccount(accountRequest, id, principal.getName());
-//        return new ResponseEntity<>(accountResponse, HttpStatus.OK);
-//    }
+    @PutMapping("/{id}")
+    public ResponseEntity<AccountResponse> updateAccount(@PathVariable Long id, @RequestBody AccountRequest accountRequest, Principal principal) {
+        // You'll need to modify the service layer to verify ownership via principal.getName()
+        AccountResponse accountResponse = accountService.updateAccount(accountRequest, id, principal.getName());
+        return new ResponseEntity<>(accountResponse, HttpStatus.OK);
+    }
 
-//    @DeleteMapping("{id}")
-//    public ResponseEntity<Void> deleteAccount(@PathVariable Long id, Principal principal) {
-//        // You'll need to modify the service layer to verify ownership via principal.getName()
-//        accountService.deleteAccount(id, principal.getName());
-//        return ResponseEntity.noContent().build();
-//    }
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteAccount(@PathVariable Long id, Principal principal) {
+        // You'll need to modify the service layer to verify ownership via principal.getName()
+        accountService.deleteAccount(id, principal.getName());
+        return ResponseEntity.noContent().build();
+    }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<AccountResponse> getAccountById(@PathVariable Long id, Principal principal) {
-//        // You'll need to modify the service layer to verify ownership via principal.getName()
-//        Optional<AccountResponse> accountResponse = accountService.getAccountById(id, principal.getName());
-//        return accountResponse.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-//    }
+    @GetMapping("/{id}")
+    public ResponseEntity<AccountResponse> getAccountById(@PathVariable Long id, Principal principal) {
+        // You'll need to modify the service layer to verify ownership via principal.getName()
+        Optional<AccountResponse> accountResponse = accountService.getAccountById(id, principal.getName());
+        return accountResponse.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 //
 //    @GetMapping
 //    // FIX: Removed @RequestParam("userId") and replaced with Principal

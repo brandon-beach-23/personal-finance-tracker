@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AccountService {
-    AccountResponse createAccount(AccountRequest accountRequest);
-    AccountResponse updateAccount(AccountRequest accountRequest, Long id);
-    void deleteAccount(Long id);
+    AccountResponse createAccount(AccountRequest accountRequest, String username);
+    AccountResponse updateAccount(AccountRequest accountRequest, Long accountId, String username);
+    void deleteAccount(Long accountId, String username);
     List<AccountResponse> getAccountsByUserId(Long id);
     Optional<AccountResponse> getAccountById(Long id, String principal);
 

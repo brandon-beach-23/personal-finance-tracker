@@ -12,8 +12,10 @@ import com.example.wgu.finance_tracker_backend.repositories.UserRepository;
 import com.example.wgu.finance_tracker_backend.services.interfaces.AccountService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,9 +33,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
-    public AccountResponse createAccount(AccountRequest accountRequest) {
+    public AccountResponse createAccount(AccountRequest accountRequest, String username) {
 
-        User user = userRepository.findById(accountRequest.getUserId())
+        User user = userRepository.findByUserName(username)
                 .orElseThrow(()-> new ResourceNotFoundException("User not found"));
 
         if(accountRepository.existsByAccountNameAndUser(accountRequest.getAccountName(), user)){
@@ -41,16 +43,39 @@ public class AccountServiceImpl implements AccountService {
         }
 
         Account newAccount;
-        if (accountRequest.getAccountType().equals("CHECKING")) {
+
+        String requestedType = accountRequest.getAccountType() != null ? accountRequest.getAccountType().toUpperCase() : "";
+        if ("CHECKING".equals(requestedType)) {
+            // Base Account instance acts as Checking Account
             newAccount = new Account();
-        } else {
+        } else if ("SAVINGS".equals(requestedType)) {
             newAccount = new SavingsAccount();
+        } else {
+            // Default to a base Account if the type is unrecognized
+            newAccount = new Account();
+            System.out.println("Warning: Unrecognized account type, defaulting to base Account (Checking).");
         }
 
         newAccount.setAccountName(accountRequest.getAccountName());
-        newAccount.setAccountType(accountRequest.getAccountType());
+
+        try {
+            // This is the conversion that the entity's setter requires (e.g., AccountType.CHECKING)
+            newAccount.setAccountType(AccountType.valueOf(requestedType));
+        } catch (IllegalArgumentException e) {
+            // Fallback for types that shouldn't exist based on our if/else logic, but ensures safety
+            System.err.println("Critical Error: Failed to map requested type [" + requestedType + "] to AccountType enum. Setting to default CHECKING.");
+            newAccount.setAccountType(AccountType.CHECKING);
+        }
+
         newAccount.setBalance(accountRequest.getBalance());
         newAccount.setUser(user);
+
+        System.out.println("Account Request");
+        System.out.println(accountRequest.getAccountName());
+
+        System.out.println(accountRequest.getBalance());
+        System.out.println(accountRequest.getAccountType());
+
 
         Account savedAccount = accountRepository.save(newAccount);
 
@@ -58,53 +83,81 @@ public class AccountServiceImpl implements AccountService {
 
     }
 
-
-
-    @Override
+    /**
+     * Updates an existing account's name and type, performing a strict ownership check.
+     * @param accountRequest DTO containing new details (name, type).
+     * @param accountId The ID of the account to update.
+     * @param username The username of the authenticated user.
+     * @return The updated AccountResponse DTO.
+     */
     @Transactional
-    public AccountResponse updateAccount(AccountRequest accountRequest, Long id) {
-        // 1. Find existing account
-        Account existingAccount = accountRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Account not found for ID: " + id));
+    public AccountResponse updateAccount(AccountRequest accountRequest, Long accountId, String username) {
 
-        // 2. Find the User (Ownership check)
-        User user = userRepository.findById(accountRequest.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found for ID: " + accountRequest.getUserId()));
+        // 1. Fetch User
+        User user = userRepository.findByUserName(username)
+                .orElseThrow(() -> new ResourceNotFoundException("Authenticated User not found with username: " + username));
 
-        // 3. SECURITY CHECK: Ensure requesting user owns the account
-        if (!existingAccount.getUser().getId().equals(user.getId())) {
-            throw new SecurityException("Account does not belong to the user.");
+        // 2. Fetch Account
+        Account existingAccount = accountRepository.findById(accountId)
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found with ID: " + accountId));
+
+        // 3. Ownership Check (CRITICAL SECURITY STEP)
+        if (!existingAccount.getUser().getUserName().equals(username)) {
+            throw new IllegalArgumentException("Account ID " + accountId + " does not belong to user " + username);
         }
 
-        // 4. Type Immutability Check (Cannot change account type on update)
-        AccountType accountTypeEnum = accountRequest.getAccountType();
-        if (accountTypeEnum == null) {
-            throw new IllegalArgumentException("Account type must be provided for update validation.");
-        }
-
-        String requestType = accountTypeEnum.name();
-        String existingType = existingAccount instanceof SavingsAccount ? AccountType.SAVINGS.name() : AccountType.CHECKING.name();
-
-        if (!requestType.equals(existingType)) {
-            throw new IllegalArgumentException("Account type cannot be changed during an update operation.");
-        }
-
-        // 5. Apply Updates
+        // 4. Apply updates
         existingAccount.setAccountName(accountRequest.getAccountName());
-        existingAccount.setBalance(accountRequest.getBalance() != null ? accountRequest.getBalance() : existingAccount.getBalance());
 
-        // 6. Save and convert
+        // Normalize and convert AccountType (same logic as create)
+        String requestedType = accountRequest.getAccountType() != null ? accountRequest.getAccountType().toUpperCase() : "";
+
+        try {
+            existingAccount.setAccountType(AccountType.valueOf(requestedType));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid account type: " + requestedType);
+        }
+
+        // NOTE: Balance is intentionally NOT updated here, per user requirement.
+
         Account updatedAccount = accountRepository.save(existingAccount);
         return convertToDTO(updatedAccount);
     }
 
-    @Override
+    /**
+     * Deletes an account, performing a strict ownership check.
+     * @param accountId The ID of the account to delete.
+     * @param username The username of the authenticated user.
+     */
     @Transactional
-    public void deleteAccount(Long id) {
-        if(!accountRepository.existsById(id)){
-            throw new ResourceNotFoundException("Account not found");
+    public void deleteAccount(Long accountId, String username) {
+
+        // 1. Fetch User (implicitly checks if user exists)
+        User user = userRepository.findByUserName(username)
+                .orElseThrow(() -> new ResourceNotFoundException("Authenticated User not found with username: " + username));
+
+        // 2. Fetch Account
+        Account accountToDelete = accountRepository.findById(accountId)
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found with ID: " + accountId));
+
+        // 3. Ownership Check (CRITICAL SECURITY STEP)
+        if (!accountToDelete.getUser().getUserName().equals(username)) {
+            throw new IllegalArgumentException("Account ID " + accountId + " does not belong to user " + username);
         }
-        accountRepository.deleteById(id);
+
+        // 4. Delete with Exception Handling
+        try {
+            accountRepository.delete(accountToDelete);
+        } catch (DataIntegrityViolationException e) {
+            // ⭐️ FIX: Catch the database error (likely caused by foreign key constraints)
+            // and throw a more descriptive error that should map to a 409 Conflict or 400 Bad Request.
+
+            // This exception should be caught by your global exception handler and mapped to a 409 or 400.
+            // It's descriptive for the frontend.
+            throw new IllegalStateException("Cannot delete account ID " + accountId +
+                    " because it has associated financial data (transactions, goals, etc.). " +
+                    "Please delete all linked data first.", e);
+        }
     }
 
     @Override
@@ -118,17 +171,36 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<AccountResponse> getAccountsByUsername(String name) {
-        return accountRepository.findByUserUsername(name).stream()
+    public List<AccountResponse> getAccountsByUsername(String username) {
+        User user = userRepository.findByUserName(username).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        List<Account> accounts = accountRepository.findByUserUserName(username);
+
+        return accounts.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public Optional<AccountResponse> getAccountById(Long id, String principal) {
+    /**
+     * Retrieves a single account by ID, ensuring ownership by the authenticated user.
+     * This supports the GET /api/accounts/{id} endpoint.
+     * @param accountId The ID of the account to retrieve.
+     * @param username The username of the authenticated user.
+     * @return An Optional containing the AccountResponse DTO.
+     */
 
-        return accountRepository.findById(id)
-                .map(this::convertToDTO);
+    public Optional<AccountResponse> getAccountById(Long accountId, String username) {
+        // 1. Fetch the Account
+        return accountRepository.findById(accountId)
+                .map(account -> {
+                    // 2. Ownership Check (CRITICAL)
+                    if (!account.getUser().getUserName().equals(username)) {
+                        // Throw a security exception if unauthorized access is attempted
+                        throw new IllegalArgumentException("Account ID " + accountId + " does not belong to user " + username);
+                    }
+                    // 3. Convert and return
+                    return convertToDTO(account);
+                });
     }
 
     private AccountResponse convertToDTO(Account savedAccount) {
@@ -136,8 +208,21 @@ public class AccountServiceImpl implements AccountService {
         accountResponse.setId(savedAccount.getId());
         accountResponse.setAccountName(savedAccount.getAccountName());
         accountResponse.setBalance(savedAccount.getBalance());
-        accountResponse.setAccountType(savedAccount instanceof SavingsAccount ? AccountType.SAVINGS.name() : AccountType.CHECKING.name());
-        accountResponse.setUserId(savedAccount.getUser() != null ? savedAccount.getUser().getId() : null);
+        accountResponse.setUserId(savedAccount.getUser().getId());
+
+        String accountType;
+        if (savedAccount instanceof SavingsAccount) {
+            accountType = "SAVINGS";
+        } else {
+            accountType = "CHECKING";
+        }
+        accountResponse.setAccountType(accountType);
+
+        System.out.println(accountResponse.getId());
+        System.out.println(accountResponse.getAccountName());
+        System.out.println(accountResponse.getBalance());
+        System.out.println(accountResponse.getAccountType());
+
         return accountResponse;
     }
 }

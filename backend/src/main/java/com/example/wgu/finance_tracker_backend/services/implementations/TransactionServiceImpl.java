@@ -2,15 +2,14 @@ package com.example.wgu.finance_tracker_backend.services.implementations;
 
 import com.example.wgu.finance_tracker_backend.DTOs.TransactionRequest;
 import com.example.wgu.finance_tracker_backend.DTOs.TransactionResponse;
+import com.example.wgu.finance_tracker_backend.exceptions.InvalidCredentialsException;
 import com.example.wgu.finance_tracker_backend.exceptions.ResourceNotFoundException;
-import com.example.wgu.finance_tracker_backend.models.Account;
-import com.example.wgu.finance_tracker_backend.models.Category;
-import com.example.wgu.finance_tracker_backend.models.Transaction;
-import com.example.wgu.finance_tracker_backend.models.TransactionType;
+import com.example.wgu.finance_tracker_backend.models.*;
 import com.example.wgu.finance_tracker_backend.repositories.AccountRepository;
 import com.example.wgu.finance_tracker_backend.repositories.CategoryRepository;
 import com.example.wgu.finance_tracker_backend.repositories.TransactionRepository;
 import com.example.wgu.finance_tracker_backend.services.interfaces.TransactionService;
+import org.apache.tomcat.util.codec.binary.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +36,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public TransactionResponse createTransaction(TransactionRequest transactionRequest) {
+    public TransactionResponse createTransaction(TransactionRequest transactionRequest, String username) {
 
         //Create the account and category objects required for the transaction entity
         Account account = accountRepository.findById(transactionRequest.getAccountId())
@@ -68,8 +67,15 @@ public class TransactionServiceImpl implements TransactionService {
         } else {
             throw new IllegalArgumentException("Invalid transaction type" + transactionRequest.getTransactionType());
         }
-        accountRepository.save(account);
 
+        //Check to make sure the authorized user making the request owns the account
+        String accountUsername = account.getUser().getUserName();
+
+        if(!accountUsername.equals(username)){
+            throw new InvalidCredentialsException("The user does not own the account");
+        }
+
+        accountRepository.save(account);
         //Create and set the fields of the new transaction
         Transaction transaction = new Transaction();
         transaction.setAccount(account);
@@ -83,11 +89,15 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction savedTransaction = transactionRepository.save(transaction);
 
         return convertToDto(savedTransaction);
+
+
+
+
     }
 
     @Override
     @Transactional
-    public TransactionResponse updateTransaction(Long transactionId, TransactionRequest transactionRequest) {
+    public TransactionResponse updateTransaction(Long transactionId, TransactionRequest transactionRequest, String username) {
 
         //Find the existing transaction
         Transaction existingTransaction = transactionRepository.findById(transactionId)
@@ -137,6 +147,13 @@ public class TransactionServiceImpl implements TransactionService {
         existingTransaction.setName(transactionRequest.getName());
         existingTransaction.setDate(transactionRequest.getTransactionDate());
 
+        //Check to make sure the authorized user making the request owns the account
+        String accountUsername = account.getUser().getUserName();
+
+        if(!accountUsername.equals(username)){
+            throw new InvalidCredentialsException("The user does not own the account");
+        }
+
         //Save the account and transaction
         accountRepository.save(account);
         Transaction updatedTransaction = transactionRepository.save(existingTransaction);
@@ -146,7 +163,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public void deleteTransaction(Long transactionId) {
+    public void deleteTransaction(Long transactionId, String username) {
         Transaction exisitngTransaction = transactionRepository.findById(transactionId)
                 .orElseThrow(() -> new ResourceNotFoundException("Transaction not found"));
 
@@ -158,6 +175,14 @@ public class TransactionServiceImpl implements TransactionService {
         else if (exisitngTransaction.getTransactionType() == TransactionType.CREDIT) {
             account.debit(exisitngTransaction.getAmount());
         }
+
+        //Check to make sure the authorized user making the request owns the account
+        String accountUsername = account.getUser().getUserName();
+
+        if(!accountUsername.equals(username)){
+            throw new InvalidCredentialsException("The user does not own the account");
+        }
+
         transactionRepository.delete(exisitngTransaction);
         accountRepository.save(account);
     }
@@ -168,7 +193,18 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<TransactionResponse> getTransactionsByAccountId(Long accountId) {
+    public List<TransactionResponse> getTransactionsByAccountId(Long accountId, String username) {
+
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
+
+        //Check to make sure the authorized user making the request owns the account
+        String accountUsername = account.getUser().getUserName();
+
+        if(!accountUsername.equals(username)){
+            throw new InvalidCredentialsException("The user does not own the account");
+        }
+
         List<Transaction> transactions = transactionRepository.findByAccountId(accountId);
         return transactions.stream()
                 .map(this::convertToDto)
@@ -210,5 +246,9 @@ public class TransactionServiceImpl implements TransactionService {
         response.setName(transaction.getName());
         response.setTransactionDate(transaction.getDate());
         return response;
+    }
+
+    private boolean userOwnsAccount(User user, String username) {
+        return user.getUserName().equals(username);
     }
 }

@@ -13,11 +13,11 @@ import java.util.Optional;
 public interface TransactionService {
 
     //Basic CRUD Operations
-    TransactionResponse createTransaction(TransactionRequest transactionRequest);
-    TransactionResponse updateTransaction(Long transactionId, TransactionRequest transactionRequest);
-    void deleteTransaction(Long transactionId);
+    TransactionResponse createTransaction(TransactionRequest transactionRequest, String username);
+    TransactionResponse updateTransaction(Long transactionId, TransactionRequest transactionRequest, String username);
+    void deleteTransaction(Long transactionId, String username);
     Optional<TransactionResponse> getById(Long transactionId);
-    List<TransactionResponse> getTransactionsByAccountId(Long accountId);
+    List<TransactionResponse> getTransactionsByAccountId(Long accountId, String username);
 
     //Reporting and Searching - implemented at a later date
     List<TransactionResponse> getTransactionsByAccountIdAndName(Long accountId, String name);

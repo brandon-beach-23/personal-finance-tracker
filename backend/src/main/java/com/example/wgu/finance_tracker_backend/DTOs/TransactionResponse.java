@@ -16,16 +16,6 @@ public class TransactionResponse {
     public TransactionResponse() {
     }
 
-    public TransactionResponse(Long id, String name, BigDecimal amount, String categoryName, String transactionType, Long accountId,  LocalDate transactionDate) {
-        this.id = id;
-        this.name = name;
-        this.amount = amount;
-        this.categoryName = categoryName;
-        this.transactionType = transactionType;
-        this.accountId = accountId;
-        this.transactionDate = transactionDate;
-    }
-
     public Long getId() {
         return id;
     }
@@ -80,6 +70,4 @@ public class TransactionResponse {
     public LocalDate getTransactionDate() {
         return transactionDate;
     }
-
-
 }

@@ -18,23 +18,15 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "account_id")
     private Account account;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private Category category;
 
     public Transaction() {
-    }
-
-    public Transaction(Long id, String name, BigDecimal amount, LocalDate date, TransactionType transactionType) {
-        this.id = id;
-        this.name = name;
-        this.amount = amount;
-        this.date = date;
-        this.transactionType = transactionType;
     }
 
     public Long getId() {

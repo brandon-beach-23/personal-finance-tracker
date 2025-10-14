@@ -55,11 +55,31 @@ export class AccountService {
   // --- UPDATE (New) ---
   updateAccount(accountId: number, request: AccountRequest): Observable<AccountResponse> {
     // Note: The backend only uses name and type from this request DTO for update
-    return this.http.put<AccountResponse>(`${this.apiUrl}/${accountId}`, request);
+    const fullUrl: string  = `${this.apiUrl}/${accountId}`;
+    return this.http.put<AccountResponse>(fullUrl, request).pipe(
+      tap(() => {
+        this.getAccounts().subscribe();
+        console.log('Service: Account updated, refreshing list');
+      }),
+      catchError(error => {
+        console.error('Error updating account:', error);
+        return throwError(() => new Error('Account update failed.'));
+      })
+    );
   }
 
   // --- DELETE (New) ---
   deleteAccount(accountId: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${accountId}`);
+    const fullUrl: string  = `${this.apiUrl}/${accountId}`;
+    return this.http.delete<void>(fullUrl).pipe(
+      tap(() => {
+        this.getAccounts().subscribe();
+        console.log('Service: Account deleted, refreshing list');
+      }),
+      catchError(error => {
+        console.error('Error deleting the account:', error);
+        return throwError(() => new Error('Account deletion failed.'));
+      })
+    );
   }
 }

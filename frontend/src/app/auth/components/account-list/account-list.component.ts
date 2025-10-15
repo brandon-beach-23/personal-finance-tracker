@@ -8,6 +8,7 @@ import { AccountModalComponent } from '../account-modal/account-modal.component'
 import { AccountService} from "../../account.service";
 import { AccountResponse} from "../../models/account-response.model";
 import {EditDeleteAccountModalComponent} from "../edit-delete-account-modal/edit-delete-account-modal.component";
+import {TransactionService} from "../../transaction.service";
 
 @Component({
   selector: 'app-account-list',
@@ -19,6 +20,7 @@ import {EditDeleteAccountModalComponent} from "../edit-delete-account-modal/edit
 })
 export class AccountListComponent implements OnInit {
   private accountService = inject(AccountService);
+  private transactionService = inject(TransactionService);
 
   // Expose the Observable stream directly to the template
   public checkingAccounts$!: Observable<AccountResponse[]>;
@@ -65,6 +67,8 @@ export class AccountListComponent implements OnInit {
   selectAccount(account: AccountResponse): void {
     console.log('Account selected:', account.accountName);
     this.accountSelected.emit(account); // Emit the event
+    //Set the account id in transaction service
+    this.transactionService.setSelectedAccountId(account.accountId);
   }
 
   // Add this method to your AccountListComponent class

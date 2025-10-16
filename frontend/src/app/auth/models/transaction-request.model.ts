@@ -3,6 +3,6 @@ export interface TransactionRequest {
   transactionAmount: number;
   transactionCategory: string;
   transactionType: 'DEBIT' | 'CREDIT';
-  accountId: number;
+  accountId: number | null;
   transactionDate: string;
 }

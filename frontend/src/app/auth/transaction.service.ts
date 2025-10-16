@@ -14,7 +14,7 @@ export class TransactionService {
   private apiUrl = 'http://localhost:8080/api/transactions';
   private transactionsSubject =  new BehaviorSubject<TransactionResponse[]>([]);
   private transactions$: Observable<TransactionResponse[]> = this.transactionsSubject.asObservable();
-  private selectedAccountIdSubject = new BehaviorSubject<number | null>(null);
+  public selectedAccountIdSubject = new BehaviorSubject<number | null>(null);
   public selectedAccountId$ = this.selectedAccountIdSubject.asObservable();
 
   constructor() { }

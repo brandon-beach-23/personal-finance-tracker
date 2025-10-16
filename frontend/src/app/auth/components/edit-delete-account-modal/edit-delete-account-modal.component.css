@@ -1,0 +1,24 @@
+:host {
+  display: block;
+  z-index: 1050;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  /* ⭐️ FIX: Increased opacity from 0.8 to 0.95 for a more solid, dark background */
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1050;
+}
+
+/* Adjust the inner content container to be responsive */
+.modal-dialog-centered {
+  margin: auto;
+  z-index: 1055;
+}
+
+.modal-content {
+  background: #fff;
+}

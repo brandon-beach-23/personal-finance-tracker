@@ -1,0 +1,17 @@
+/* Basic styling for the list and buttons */
+.account-item:hover {
+  background-color: #f8f9fa;
+  cursor: pointer;
+}
+.text-sm {
+  font-size: 0.85rem;
+}
+.btn-light {
+  /*color: var(--bs-primary);*/
+  background-color: #f8f9fa;
+  border-color: #f8f9fa;
+}
+.btn-outline-light {
+  color: #f8f9fa;
+  border-color: #f8f9fa;
+}

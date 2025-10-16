@@ -32,7 +32,6 @@ export class TransactionService {
         if (currentId !== null){
           this.getTransactionsByAccountId(currentId).subscribe();
         }
-
         console.log('Service: New transaction created refreshing list.');
       }),
       catchError(error => {

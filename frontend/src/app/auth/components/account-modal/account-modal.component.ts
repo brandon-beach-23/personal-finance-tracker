@@ -25,7 +25,7 @@ export class AccountModalComponent implements OnInit {
   @Output() closeModal = new EventEmitter<void>();
 
   // Available account types for the select dropdown
-  accountTypes: ('CHECKING' | 'SAVINGS' | 'INVESTMENT')[] = ['CHECKING', 'SAVINGS', 'INVESTMENT'];
+  accountTypes: ('CHECKING' | 'SAVINGS')[] = ['CHECKING', 'SAVINGS'];
 
   ngOnInit(): void {
     // Initialize the form with required controls and validators

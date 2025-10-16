@@ -3,13 +3,15 @@ import {AuthService} from "../auth/auth.service";
 import {Router} from "@angular/router";
 import {AccountListComponent} from "../auth/components/account-list/account-list.component";
 import {AccountModalComponent} from "../auth/components/account-modal/account-modal.component";
+import {TransactionListComponent} from "../auth/components/transaction-list/transaction-list.component";
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [
     AccountListComponent,
-    AccountModalComponent
+    AccountModalComponent,
+    TransactionListComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'

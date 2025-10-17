@@ -31,7 +31,11 @@
         <ng-container *ngIf="accounts.length > 0; else empty">
           <li class="list-group-item d-flex justify-content-between align-items-center account-item"
               *ngFor="let account of accounts"
-              (click)="selectAccount(account)">
+              (click)="selectAccount(account)"
+              [ngClass]="{
+               'bg-info-subtle': (selectedAccountName$ | async) === account.accountName,
+               'border-primary': (selectedAccountName$ | async) === account.accountName
+              }">
 
             <!-- Account Name -->
             <div>

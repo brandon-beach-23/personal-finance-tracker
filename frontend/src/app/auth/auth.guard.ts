@@ -23,7 +23,7 @@ export class AuthGuard implements CanActivate {
     if(this.authService.isLoggedIn()) {
       return true;
     } else {
-      console.warn('Route access denied. Ridirecting to login.');
+      console.warn('Route access denied. Redirecting to login.');
       return this.router.createUrlTree(['/login']);
     }
   }

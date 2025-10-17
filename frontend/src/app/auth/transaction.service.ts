@@ -16,6 +16,8 @@ export class TransactionService {
   private transactions$: Observable<TransactionResponse[]> = this.transactionsSubject.asObservable();
   public selectedAccountIdSubject = new BehaviorSubject<number | null>(null);
   public selectedAccountId$ = this.selectedAccountIdSubject.asObservable();
+  public selectedAccountNameSubject = new BehaviorSubject<string | null>(null);
+  public selectedAccountName$ = this.selectedAccountNameSubject.asObservable();
 
   constructor() { }
 
@@ -23,6 +25,11 @@ export class TransactionService {
   public setSelectedAccountId(accountId: number): void {
     this.selectedAccountIdSubject.next(accountId);
   }
+
+  public setSelectedAccountName(accountName: string): void {
+    this.selectedAccountNameSubject.next(accountName);
+  }
+
 
   //Create a new transaction
   createTransaction(request: TransactionRequest): Observable<TransactionResponse> {

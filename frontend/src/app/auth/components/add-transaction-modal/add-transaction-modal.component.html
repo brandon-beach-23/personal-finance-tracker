@@ -1,0 +1,93 @@
+<!-- Overlay: This provides the modal background effect -->
+<div class="modal-overlay" (click)="close()"></div>
+
+<!-- Modal Content Container -->
+<div class="modal-dialog-centered">
+  <div class="modal-content">
+
+    <h2 class="mb-4 text-center text-primary">Add New Transaction</h2>
+
+    <!-- Response Message Area -->
+    <div *ngIf="responseMessage"
+         class="alert text-center fw-bold"
+         [class.alert-success]="responseMessage.includes('successfully')"
+         [class.alert-danger]="responseMessage.includes('failed')">
+      {{ responseMessage }}
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="addTransactionForm" (ngSubmit)="onSubmit()" class="card p-4 shadow-lg border-0">
+
+      <div class="mb-3">
+        <label for="transactionName" class="form-label">Transaction Name</label>
+        <input id="transactionName" type="text" formControlName="transactionName"
+               class="form-control"
+               placeholder="e.g., Kroger"
+               [class.is-invalid]="addTransactionForm.get('transactionName')?.invalid && addTransactionForm.get('transactionName')?.touched">
+        <div *ngIf="addTransactionForm.get('transactionName')?.invalid && addTransactionForm.get('transactionName')?.touched" class="invalid-feedback">
+          Transaction name is required.
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="transactionAmount" class="form-label">Transaction Amount ($)</label>
+        <!-- Type number is critical for financial data input -->
+        <input id="transactionAmount" type="number" formControlName="transactionAmount"
+               class="form-control"
+               placeholder="0.00"
+               [class.is-invalid]="addTransactionForm.get('transactionAmount')?.invalid && addTransactionForm.get('transactionAmount')?.touched">
+        <div *ngIf="addTransactionForm.get('transactionAmount')?.invalid && addTransactionForm.get('transactionAmount')?.touched" class="invalid-feedback">
+          Amount is required and must be a valid number.
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label for="transactionType" class="form-label">Transaction Type</label>
+        <!-- Using a select for controlled input is much safer -->
+        <select id="transactionType" formControlName="transactionType"
+                class="form-select"
+                [class.is-invalid]="addTransactionForm.get('transactionType')?.invalid && addTransactionForm.get('transactionType')?.touched">
+          <option value="" disabled>Select a type...</option>
+          <option *ngFor="let type of transactionTypes" [value]="type">{{ type | titlecase }}</option>
+        </select>
+        <div *ngIf="addTransactionForm.get('transactionType')?.invalid && addTransactionForm.get('transactionType')?.touched" class="invalid-feedback">
+          Transaction type is required.
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label for="transactionCategory" class="form-label">Transaction Category</label>
+        <!-- Using a select for controlled input is much safer -->
+        <select id="transactionCategory" formControlName="categoryId"
+                class="form-select"
+                [class.is-invalid]="addTransactionForm.get('transactionCategory')?.invalid && addTransactionForm.get('transactionCategory')?.touched">
+          <option value="" disabled>Select a category...</option>
+          <option value="add">Add new category</option>
+          <option *ngFor="let category of transactionCategories" [value]="category.categoryId">{{ category.categoryName | titlecase }}</option>
+        </select>
+        <div *ngIf="addTransactionForm.get('transactionCategory')?.invalid && addTransactionForm.get('transactionCategory')?.touched" class="invalid-feedback">
+          Transaction category is required.
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label for="transactionDate" class="form-label">Date</label>
+        <input type="date" id="transactionDate" formControlName="transactionDate" class="form-control"
+        [class.is-invalid]="addTransactionForm.get('transactionDate')?.invalid && addTransactionForm.get('transactionDate')?.touched">
+        <div *ngIf="addTransactionForm.get('transactionDate')?.invalid && addTransactionForm.get('transactionDate')?.touched" class="invalid-feedback">
+          Transaction date is required.
+        </div>
+      </div>
+
+      <div class="d-grid gap-2">
+        <button type="submit" [disabled]="addTransactionForm.invalid" class="btn btn-success btn-lg shadow-sm">
+          <i class="bi bi-save me-2"></i> Save Transaction
+        </button>
+        <button type="button" (click)="close()" class="btn btn-outline-secondary">
+          Cancel
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>

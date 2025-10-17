@@ -46,11 +46,11 @@ public class TransactionController {
         return ResponseEntity.noContent().build();
     }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<TransactionResponse> getTransactionById(@PathVariable Long id) {
-//        Optional<TransactionResponse> transactionResponse = transactionService.getById(id);
-//        return transactionResponse.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-//    }
+    @GetMapping("/{id}")
+    public ResponseEntity<TransactionResponse> getTransactionById(@PathVariable Long id) {
+        Optional<TransactionResponse> transactionResponse = transactionService.getById(id);
+        return transactionResponse.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
     @GetMapping
     public ResponseEntity<List<TransactionResponse>> getTransactionByAccountId(@RequestParam("accountId") Long accountId, Principal principal) {

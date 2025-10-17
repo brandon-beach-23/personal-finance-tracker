@@ -25,6 +25,8 @@ export class AccountListComponent implements OnInit {
   // Expose the Observable stream directly to the template
   public checkingAccounts$!: Observable<AccountResponse[]>;
 
+  public selectedAccountName$!: Observable<string | null>;
+
   // === State Management for UI/Modal ===
   // Signal to control the visibility of the Add/Edit form modal
 // Assuming this is the parent component (e.g., AccountsComponent)
@@ -58,7 +60,7 @@ export class AccountListComponent implements OnInit {
         allAccounts.filter(account => account.accountType === 'CHECKING')
     )
     );
-
+    this.selectedAccountName$ = this.transactionService.selectedAccountName$;
     // 2. Trigger the HTTP fetch operation.
     this.accountService.getAccounts().subscribe();
   }
@@ -69,6 +71,7 @@ export class AccountListComponent implements OnInit {
     this.accountSelected.emit(account); // Emit the event
     //Set the account id in transaction service
     this.transactionService.setSelectedAccountId(account.accountId);
+    this.transactionService.setSelectedAccountName(account.accountName);
   }
 
   // Add this method to your AccountListComponent class

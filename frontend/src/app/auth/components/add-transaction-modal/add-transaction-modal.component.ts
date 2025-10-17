@@ -3,21 +3,24 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angula
 import { CommonModule } from "@angular/common";
 // Ensure this path is correct based on your file structure
 import {TransactionService} from "../../transaction.service";
-import {TransactionRequest} from "../../models/transaction-request.model"; // Using the correct account model path
+import {TransactionRequest} from "../../models/transaction-request.model";
+import {CategoryService} from "../../category.service";
+import {CategoryResponse} from "../../models/category-response.model"; // Using the correct account model path
 
 @Component({
-  selector: 'app-account-modal',
+  selector: 'app-add-transaction-modal',
   standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule
   ],
-  templateUrl: './account-modal.component.html',
-  styleUrl: './account-modal.component.css'
+  templateUrl: './add-transaction-modal.component.html',
+  styleUrl: './add-transaction-modal.component.css'
 })
-export class AccountModalComponent implements OnInit {
+export class AddTransactionModalComponent implements OnInit {
   private fb = inject(FormBuilder);
   private transactionService = inject(TransactionService);
+  private categoryService = inject(CategoryService);
 
 
   addTransactionForm!: FormGroup; // Use definite assignment assertion with initialization in ngOnInit
@@ -26,8 +29,9 @@ export class AccountModalComponent implements OnInit {
   // Output event to notify the parent component (Account List) to close the modal
   @Output() closeModal = new EventEmitter<void>();
 
-  // Available account types for the select dropdown
+  // Available transaction types for the select dropdown
   transactionTypes: ('DEBIT' | 'CREDIT')[] = ['DEBIT', 'CREDIT'];
+  public transactionCategories: CategoryResponse[] = [];
 
   ngOnInit(): void {
     // Initialize the form with required controls and validators
@@ -36,9 +40,15 @@ export class AccountModalComponent implements OnInit {
       // Validators.required will enforce a value, but you might want custom number validation too
       transactionAmount: [0, [Validators.required, Validators.min(0)]],
       transactionType: ['', Validators.required],
-      transactionCategory: ['', Validators.required],
-      transactionDate: ['', Validators.required]
+      categoryId: ['', Validators.required],
+      transactionDate: [this.getDefaultDate(), Validators.required]
     });
+
+    this.transactionCategories = this.categoryService.getCurrentCategories();
+  }
+
+  private getDefaultDate(): string{
+    return new Date().toISOString().substring(0, 10);
   }
 
   onSubmit(): void {
@@ -55,8 +65,11 @@ export class AccountModalComponent implements OnInit {
       return;
     }
 
+
+
     // Cast value to your request model
     const transactionRequest: TransactionRequest = this.addTransactionForm.value as TransactionRequest;
+
     transactionRequest.accountId = accountId;
 
 

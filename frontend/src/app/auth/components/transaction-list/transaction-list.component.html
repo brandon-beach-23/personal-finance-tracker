@@ -1,6 +1,6 @@
 <div class="card shadow-md h-full">
   <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-    <h5 class="card-title mb-0">Transactions for (Selected Account)</h5>
+    <h5 class="card-title mb-0">Transactions for {{ selectedAccountName$ | async }}</h5>
 
     <!-- Action Buttons -->
     <div class="btn-group" role="group">
@@ -61,10 +61,10 @@
   </div>
 </div>
 
-<!--<app-account-modal-->
-<!--  *ngIf="isAddTransactionModalOpen()"-->
-<!--  (closeModal)="closeAddTransactionModal()">-->
-<!--</app-account-modal>-->
+<app-add-transaction-modal
+  *ngIf="isAddTransactionModalOpen()"
+  (closeModal)="closeAddTransactionModal()">
+</app-add-transaction-modal>
 
 <!--<app-edit-delete-account-modal-->
 <!--  *ngIf="isEditDeleteTransactionModalOpen()"-->

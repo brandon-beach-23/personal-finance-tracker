@@ -1,8 +1,10 @@
-import {Component, inject, OnInit, signal} from '@angular/core';
+import
+{Component, inject, OnInit, signal} from '@angular/core';
 import {TransactionService} from "../../transaction.service";
 import {TransactionResponse} from "../../models/transaction-response.model";
-import {filter, switchMap} from "rxjs";
+import {filter, Observable, switchMap} from "rxjs";
 import {CommonModule, CurrencyPipe, DatePipe} from "@angular/common";
+import {AddTransactionModalComponent} from "../add-transaction-modal/add-transaction-modal.component";
 
 @Component({
   selector: 'app-transaction-list',
@@ -10,13 +12,21 @@ import {CommonModule, CurrencyPipe, DatePipe} from "@angular/common";
   imports: [
     CurrencyPipe,
     DatePipe,
-    CommonModule
+    CommonModule,
+    AddTransactionModalComponent
   ],
   templateUrl: './transaction-list.component.html',
   styleUrl: './transaction-list.component.css'
 })
 export class TransactionListComponent implements OnInit{
   public transactionService = inject(TransactionService);
+
+  public selectedAccountName$: Observable<string | null>;
+
+  constructor() {
+    this.selectedAccountName$ = this.transactionService.selectedAccountName$;
+  }
+
 
   public transactions = signal<TransactionResponse[]>([]);
 

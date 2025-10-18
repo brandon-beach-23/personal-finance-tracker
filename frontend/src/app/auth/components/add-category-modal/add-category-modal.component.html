@@ -1,0 +1,39 @@
+<div class="nested-moodal-overlay" (click)="close()"></div>
+  <div class="nested-modal-dialog">
+    <div class="modal-content p-4 shadow-lg">
+
+      <h5 class="mb- text-center text-primary">Add New Category</h5>
+
+      <div *ngIf="responseMessage"
+           class="alert text-center fw-bold small"
+           [class.alert-success]="responseMessage.includes('added')"
+           [class.alert-danger]="responseMessage.includes('failed')">
+        {{ responseMessage }}
+      </div>
+
+      <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
+
+        <div class="mb-3">
+          <label for="categoryName" class="form-label">Category Name</label>
+          <input id="categoryName" type="text" formControlName="categoryName"
+          class="form-control"
+          placeholder="e.g., Entertainment"
+          [class.is-valid]="categoryForm.get('categoryName')?.invalid && categoryForm.get('categoryName')?.touched">
+          <div *ngIf="categoryForm.get('categoryName')?.invalid && categoryForm.get('categoryName')?.touched" class="invalid-feedback">
+            Category name is required (Max 50 characters)
+          </div>
+        </div>
+
+        <div class="d-grid gap-2 mt-4">
+          <button type="submit" [disabled]="categoryForm.invalid" class="btn btn-success btn-sm">
+            <i class="bi bi-plus-circle-fill me-1"></i> Add Category
+          </button>
+          <button type="button" (click)="close()" class="btn btn-outline-secondary btn-sm">
+            Cancel
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+

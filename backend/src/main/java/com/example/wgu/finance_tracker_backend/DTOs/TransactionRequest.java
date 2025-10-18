@@ -5,10 +5,10 @@ import java.time.LocalDate;
 
 public class TransactionRequest {
 
-    private Long id;
-    private String name;
-    private BigDecimal amount;
-    private String categoryName;
+    private Long transactionId;
+    private String transactionName;
+    private BigDecimal transactionAmount;
+    private Long categoryId;
     private String transactionType;
     private Long accountId;
     private LocalDate transactionDate;
@@ -16,63 +16,36 @@ public class TransactionRequest {
     public TransactionRequest() {
     }
 
-    public TransactionRequest(String name, BigDecimal amount, String categoryName, String transactionType, Long accountId, LocalDate transactionDate) {
-        this.name = name;
-        this.amount = amount;
-        this.categoryName = categoryName;
-        this.transactionType = transactionType;
-        this.accountId = accountId;
-        this.transactionDate = transactionDate;
+    public Long getTransactionId() {
+        return transactionId;
     }
 
-    public TransactionRequest(Long id, String name, BigDecimal amount, String categoryName, String transactionType, Long accountId, LocalDate transactionDate) {
-        this.id = id;
-        this.name = name;
-        this.amount = amount;
-        this.categoryName = categoryName;
-        this.transactionType = transactionType;
-        this.accountId = accountId;
-        this.transactionDate = transactionDate;
+    public void setTransactionId(Long transactionId) {
+        this.transactionId = transactionId;
     }
 
-    public Long getId() {
-        return id;
+    public String getTransactionName() {
+        return transactionName;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setTransactionName(String transactionName) {
+        this.transactionName = transactionName;
     }
 
-    public Long getAccountId() {
-        return accountId;
+    public BigDecimal getTransactionAmount() {
+        return transactionAmount;
     }
 
-    public void setAccountId(Long accountId) {
-        this.accountId = accountId;
+    public void setTransactionAmount(BigDecimal transactionAmount) {
+        this.transactionAmount = transactionAmount;
     }
 
-    public String getName() {
-        return name;
+    public Long getCategoryId() {
+        return categoryId;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
-
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getTransactionType() {
@@ -81,6 +54,14 @@ public class TransactionRequest {
 
     public void setTransactionType(String transactionType) {
         this.transactionType = transactionType;
+    }
+
+    public Long getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
     }
 
     public LocalDate getTransactionDate() {

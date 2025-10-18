@@ -1,27 +1,25 @@
 package com.example.wgu.finance_tracker_backend.DTOs;
 
 public class CategoryRequest {
-    private Long id;
-    private String name;
+    private Long categoryId;
+    private String categoryName;
 
-    public CategoryRequest(Long id, String name) {
-        this.id = id;
-        this.name = name;
+    public CategoryRequest() {
     }
 
-    public Long getId() {
-        return id;
+    public String getCategoryName() {
+        return categoryName;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
-    public String getName() {
-        return name;
+    public Long getCategoryId() {
+        return categoryId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 }

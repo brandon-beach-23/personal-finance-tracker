@@ -1,7 +1,7 @@
 export interface TransactionRequest {
   transactionName: string;
   transactionAmount: number;
-  transactionCategory: string;
+  categoryId: number | null;
   transactionType: 'DEBIT' | 'CREDIT';
   accountId: number | null;
   transactionDate: string;

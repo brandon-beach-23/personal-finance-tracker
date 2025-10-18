@@ -57,15 +57,19 @@
 
       <div class="mb-4">
         <label for="transactionCategory" class="form-label">Transaction Category</label>
-        <!-- Using a select for controlled input is much safer -->
-        <select id="transactionCategory" formControlName="categoryId"
+        <select id="transactionCategory"
+                formControlName="categoryId"
+                (change)="onCategoryAction($event)"
                 class="form-select"
-                [class.is-invalid]="addTransactionForm.get('transactionCategory')?.invalid && addTransactionForm.get('transactionCategory')?.touched">
-          <option value="" disabled>Select a category...</option>
-          <option value="add">Add new category</option>
-          <option *ngFor="let category of transactionCategories" [value]="category.categoryId">{{ category.categoryName | titlecase }}</option>
+                [class.is-invalid]="addTransactionForm.get('categoryId')?.invalid && addTransactionForm.get('categoryId')?.touched">
+
+          <option [ngValue]="null" disabled selected>Select a category...</option>
+          <option value="add-new">Add new category</option>
+          <option *ngFor="let category of transactionCategories" [ngValue]="category.categoryId">
+            {{ category.categoryName }}
+          </option>
         </select>
-        <div *ngIf="addTransactionForm.get('transactionCategory')?.invalid && addTransactionForm.get('transactionCategory')?.touched" class="invalid-feedback">
+        <div *ngIf="addTransactionForm.get('categoryId')?.invalid && addTransactionForm.get('categoryId')?.touched" class="invalid-feedback">
           Transaction category is required.
         </div>
       </div>
@@ -91,3 +95,9 @@
     </form>
   </div>
 </div>
+
+
+<app-add-category-modal
+  *ngIf="isAddCategoryModalOpen"
+  (closeModal)="closeAddCategoryModal()">
+</app-add-category-modal>

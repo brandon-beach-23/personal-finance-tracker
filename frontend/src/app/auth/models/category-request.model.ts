@@ -1,4 +1,4 @@
 export interface CategoryRequest {
-  categoryId: number;
+  categoryId?: number;
   categoryName: string;
 }

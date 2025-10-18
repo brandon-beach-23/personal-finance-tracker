@@ -24,13 +24,13 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryResponse createCategory(CategoryRequest categoryRequest) {
-        Optional<Category> existingCategory = categoryRepository.findByName(categoryRequest.getName());
+        Optional<Category> existingCategory = categoryRepository.findByName(categoryRequest.getCategoryName());
         if (existingCategory.isPresent()) {
             throw new IllegalArgumentException("Category name already exists");
         }
 
         Category newCategory = new Category();
-        newCategory.setName(categoryRequest.getName());
+        newCategory.setName(categoryRequest.getCategoryName());
         Category savedCategory = categoryRepository.save(newCategory);
 
         return convertToDTO(savedCategory);
@@ -51,7 +51,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     private CategoryResponse convertToDTO(Category savedCategory) {
         CategoryResponse categoryResponse = new CategoryResponse();
-        categoryResponse.setId(savedCategory.getId());
+        categoryResponse.setCategoryId(savedCategory.getId());
         categoryResponse.setCategoryName(savedCategory.getName());
         return categoryResponse;
     }

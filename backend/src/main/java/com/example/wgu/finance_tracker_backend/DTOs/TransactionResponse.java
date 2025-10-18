@@ -5,9 +5,9 @@ import java.time.LocalDate;
 
 public class TransactionResponse {
 
-    private Long id;
-    private String name;
-    private BigDecimal amount;
+    private Long transactionId;
+    private String transactionName;
+    private BigDecimal transactionAmount;
     private String categoryName;
     private String transactionType;
     private Long accountId;
@@ -16,28 +16,28 @@ public class TransactionResponse {
     public TransactionResponse() {
     }
 
-    public Long getId() {
-        return id;
+    public Long getTransactionId() {
+        return transactionId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setTransactionId(Long transactionId) {
+        this.transactionId = transactionId;
     }
 
-    public String getName() {
-        return name;
+    public String getTransactionName() {
+        return transactionName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTransactionName(String transactionName) {
+        this.transactionName = transactionName;
     }
 
-    public BigDecimal getAmount() {
-        return amount;
+    public BigDecimal getTransactionAmount() {
+        return transactionAmount;
     }
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
+    public void setTransactionAmount(BigDecimal transactionAmount) {
+        this.transactionAmount = transactionAmount;
     }
 
     public String getCategoryName() {
@@ -64,10 +64,11 @@ public class TransactionResponse {
         this.accountId = accountId;
     }
 
-    public void setTransactionDate(LocalDate date) {
-    }
-
     public LocalDate getTransactionDate() {
         return transactionDate;
+    }
+
+    public void setTransactionDate(LocalDate transactionDate) {
+        this.transactionDate = transactionDate;
     }
 }

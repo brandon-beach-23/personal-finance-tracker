@@ -42,7 +42,7 @@ public class TransactionServiceImpl implements TransactionService {
         Account account = accountRepository.findById(transactionRequest.getAccountId())
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
 
-        Category category = categoryRepository.findByName(transactionRequest.getCategoryName())
+        Category category = categoryRepository.findById(transactionRequest.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
 
         //Convert the string transactionType from the request DTO to an Enum for the transaction entity
@@ -53,17 +53,17 @@ public class TransactionServiceImpl implements TransactionService {
             throw new IllegalArgumentException("Invalid transaction type: " + transactionRequest.getTransactionType());
         }
 
-        if(transactionRequest.getAmount() == null || transactionRequest.getAmount().compareTo(BigDecimal.ZERO) <= 0){
+        if(transactionRequest.getTransactionAmount() == null || transactionRequest.getTransactionAmount().compareTo(BigDecimal.ZERO) <= 0){
             throw new IllegalArgumentException("Invalid amount for transaction");
         }
 
         //Determine if the transaction will debit or credit the account
         //Then save the account with the updated balance
         if (transactionType == TransactionType.DEBIT) {
-            account.debit(transactionRequest.getAmount());
+            account.debit(transactionRequest.getTransactionAmount());
         }
         else if (transactionType == TransactionType.CREDIT) {
-            account.credit(transactionRequest.getAmount());
+            account.credit(transactionRequest.getTransactionAmount());
         } else {
             throw new IllegalArgumentException("Invalid transaction type" + transactionRequest.getTransactionType());
         }
@@ -80,9 +80,9 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction transaction = new Transaction();
         transaction.setAccount(account);
         transaction.setCategory(category);
-        transaction.setAmount(transactionRequest.getAmount());
+        transaction.setAmount(transactionRequest.getTransactionAmount());
         transaction.setTransactionType(transactionType);
-        transaction.setName(transactionRequest.getName());
+        transaction.setName(transactionRequest.getTransactionName());
         transaction.setDate(transactionRequest.getTransactionDate());
 
         //Create a new transaction object of the saved transaction because the id is needed
@@ -110,10 +110,10 @@ public class TransactionServiceImpl implements TransactionService {
 
         //Find the account and category entities
         Account account = existingTransaction.getAccount();
-        Category newCategory = categoryRepository.findByName(transactionRequest.getCategoryName())
+        Category newCategory = categoryRepository.findById(transactionRequest.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
 
-        if(transactionRequest.getAmount() == null || transactionRequest.getAmount().compareTo(BigDecimal.ZERO) <= 0){
+        if(transactionRequest.getTransactionAmount() == null || transactionRequest.getTransactionAmount().compareTo(BigDecimal.ZERO) <= 0){
             throw new IllegalArgumentException("Invalid amount for transaction");
         }
 
@@ -135,16 +135,16 @@ public class TransactionServiceImpl implements TransactionService {
 
         //Apply  the new transaction
         if (newTransactionType == TransactionType.DEBIT) {
-            account.debit(transactionRequest.getAmount());
+            account.debit(transactionRequest.getTransactionAmount());
         } else if (newTransactionType == TransactionType.CREDIT) {
-            account.credit(transactionRequest.getAmount());
+            account.credit(transactionRequest.getTransactionAmount());
         }
 
         //Update transaction with new values
         existingTransaction.setCategory(newCategory);
-        existingTransaction.setAmount(transactionRequest.getAmount());
+        existingTransaction.setAmount(transactionRequest.getTransactionAmount());
         existingTransaction.setTransactionType(newTransactionType);
-        existingTransaction.setName(transactionRequest.getName());
+        existingTransaction.setName(transactionRequest.getTransactionName());
         existingTransaction.setDate(transactionRequest.getTransactionDate());
 
         //Check to make sure the authorized user making the request owns the account
@@ -238,12 +238,12 @@ public class TransactionServiceImpl implements TransactionService {
 
     private TransactionResponse convertToDto(Transaction transaction) {
         TransactionResponse response = new TransactionResponse();
-        response.setId(transaction.getId());
+        response.setAccountId(transaction.getId());
         response.setAccountId(transaction.getAccount().getId());
         response.setCategoryName(transaction.getCategory().getName());
-        response.setAmount(transaction.getAmount());
+        response.setTransactionAmount(transaction.getAmount());
         response.setTransactionType(transaction.getTransactionType().toString());
-        response.setName(transaction.getName());
+        response.setTransactionName(transaction.getName());
         response.setTransactionDate(transaction.getDate());
         return response;
     }

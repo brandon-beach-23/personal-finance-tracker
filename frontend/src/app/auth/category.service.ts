@@ -3,6 +3,8 @@ import {HttpClient} from "@angular/common/http";
 import {BehaviorSubject, Observable, tap, throwError} from "rxjs";
 import {CategoryResponse} from "./models/category-response.model";
 import {catchError} from "rxjs/operators";
+import {CategoryRequest} from "./models/category-request.model";
+import {error} from "@angular/compiler-cli/src/transformers/util";
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +29,7 @@ export class CategoryService {
       tap(categories => {
         this.categoriesSubject.next(categories);
         console.log('Categories loaded successfully');
+        console.log('Service: Categories loaded and Subject updated:', categories);
       }),
       catchError(error => {
         console.error('Error fetching categories', error);
@@ -38,5 +41,25 @@ export class CategoryService {
 
   public getCurrentCategories(): CategoryResponse[] {
     return this.categoriesSubject.getValue();
+  }
+
+  public createCategory(categoryRequest: CategoryRequest): Observable<CategoryResponse> {
+
+    const normalizedCategoryRequest: CategoryRequest = {
+      ...categoryRequest, categoryName: categoryRequest.categoryName.trim().toUpperCase()
+    };
+
+    return this.http.post<CategoryResponse>(this.apiUrl, normalizedCategoryRequest).pipe(
+      tap(newCategory => {
+
+        const currentCategories = this.categoriesSubject.getValue();
+        this.categoriesSubject.next([...currentCategories, newCategory]);
+        console.log('Category created and cached:', newCategory.categoryName);
+      }),
+      catchError(error => {
+        console.error('Error creating category', error);
+        return throwError(() => new Error('Category creation failed'));
+      })
+    );
   }
 }

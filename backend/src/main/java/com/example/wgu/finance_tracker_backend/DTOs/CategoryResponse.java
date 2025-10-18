@@ -2,7 +2,18 @@ package com.example.wgu.finance_tracker_backend.DTOs;
 
 public class CategoryResponse {
     private String categoryName;
-    private Long id;
+    private Long categoryId;
+
+    public CategoryResponse() {
+    }
+
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
 
     public String getCategoryName() {
         return categoryName;
@@ -12,11 +23,5 @@ public class CategoryResponse {
         this.categoryName = categoryName;
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 }

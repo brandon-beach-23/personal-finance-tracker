@@ -52,7 +52,7 @@ public class TransactionController {
         return transactionResponse.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping
+    @GetMapping("/accountId")
     public ResponseEntity<List<TransactionResponse>> getTransactionByAccountId(@RequestParam("accountId") Long accountId, Principal principal) {
         String username = principal.getName();
         List<TransactionResponse> transactionResponses = transactionService.getTransactionsByAccountId(accountId, username);

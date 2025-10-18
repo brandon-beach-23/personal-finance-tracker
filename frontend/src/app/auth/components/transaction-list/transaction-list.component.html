@@ -18,48 +18,50 @@
   </div>
 
   <div class="card-body p-0">
-    <!--
-        The correct syntax for *ngFor is:
-        <ng-container *ngIf="expression"> <element *ngFor="..."></element> </ng-container>
-        or using the structural if/else block pattern below, which is cleaner.
-    -->
     <ul class="list-group list-group-flush">
-
       @if (transactions().length > 0) {
-
         @for (transaction of transactions(); track transaction.transactionId) {
-          <li class="list-group-item d-flex justify-content-between align-items-center account-item">
 
-            <div>
-              <div class="fw-bold">{{ transaction.transactionName }}</div>
+          <li class="list-group-item d-flex justify-content-between align-items-center py-3 transaction-item">
+
+            <div class="d-flex flex-column">
+
+              <div class="fw-bold fs-6 text-dark">{{ transaction.transactionName }}</div>
+
               <div class="text-sm text-muted">
-<!--                {{ transaction.transactionCategory?.categoryName || 'Uncategorized' }}-->
-                <span class="mx-2">|</span>
+              <span class="text-secondary fw-semibold">
+                {{ transaction. categoryName|| 'Uncategorized' }}
+              </span>
+                <span class="mx-2 text-primary">|</span>
+                <span class="text-secondary">
                 {{ transaction.transactionDate | date:'shortDate' }}
+              </span>
               </div>
             </div>
 
-            <span class="fw-bold"
+            <div class="ms-auto text-end">
+            <span class="fw-bolder fs-5"
                   [class.text-success]="transaction.transactionType === 'CREDIT'"
                   [class.text-danger]="transaction.transactionType === 'DEBIT'">
+
+              <ng-container *ngIf="transaction.transactionType === 'CREDIT'">+</ng-container>
+
               {{ transaction.transactionAmount | currency:'USD' }}
             </span>
+            </div>
           </li>
         }
       } @else {
-
-
-      <li class="list-group-item text-center text-muted p-4">
-        @if (transactionService.selectedAccountId$) {
-          No transactions found for this account.
-        } @else {
-          Select an account to view transactions.
+        <li class="list-group-item text-center text-muted p-4">
+          @if (transactionService.selectedAccountId$) {
+            No transactions found for this account.
+          } @else {
+            Select an account to view transactions.
           }
-      </li>
+        </li>
       }
     </ul>
   </div>
-</div>
 
 <app-add-transaction-modal
   *ngIf="isAddTransactionModalOpen()"

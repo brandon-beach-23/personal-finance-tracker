@@ -79,7 +79,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
 
                         // FIX: Secure /api/ accounts and other specific routes requiring ROLE_USER
-                        .requestMatchers("/api/accounts/**", "/api/goals/**").hasAuthority("ROLE_USER")
+                        .requestMatchers("/api/accounts/**", "/api/goals/**", "/api/transactions/**").hasAuthority("ROLE_USER")
 
                         // Fallback: All other /api/ endpoints require the ROLE_USER authority
                         .requestMatchers("/api/**").hasAuthority("ROLE_USER")

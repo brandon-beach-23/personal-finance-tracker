@@ -50,7 +50,7 @@ export class TransactionService {
 
   //Read transactions by account id
   getTransactionsByAccountId(accountId: number): Observable<TransactionResponse[]> {
-    const fullUrl = `${this.apiUrl}/${accountId}`;
+    const fullUrl = `${this.apiUrl}/accountId?accountId=${accountId}`;
     return this.http.get<TransactionResponse[]>(fullUrl).pipe(
       tap(transactions => {
         this.transactionsSubject.next(transactions);

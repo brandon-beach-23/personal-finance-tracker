@@ -18,6 +18,10 @@ export class TransactionService {
   public selectedAccountId$ = this.selectedAccountIdSubject.asObservable();
   public selectedAccountNameSubject = new BehaviorSubject<string | null>(null);
   public selectedAccountName$ = this.selectedAccountNameSubject.asObservable();
+  public selectedTransactionIdSubject = new BehaviorSubject<number | null>(null);
+  public selectedTransactionId$ = this.selectedTransactionIdSubject.asObservable();
+  public selectedTransactionNameSubject = new BehaviorSubject<string | null>(null);
+  public selectedTransactionName$ = this.selectedTransactionNameSubject.asObservable();
 
   constructor() { }
 
@@ -28,6 +32,14 @@ export class TransactionService {
 
   public setSelectedAccountName(accountName: string): void {
     this.selectedAccountNameSubject.next(accountName);
+  }
+
+  public setSelectedTransactionId(transactionId: number): void {
+    this.selectedTransactionIdSubject.next(transactionId);
+  }
+
+  public setSelectedTransactionName(transactionName: string): void {
+    this.selectedTransactionNameSubject.next(transactionName);
   }
 
 

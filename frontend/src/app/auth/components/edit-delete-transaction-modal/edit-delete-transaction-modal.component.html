@@ -1,0 +1,86 @@
+<div class="modal d-block" tabindex="-1">
+<div class="modal-dialog">
+  <div class="modal-content">
+
+    <div class="modal-header bg-primary text-white">
+      <h5 class="modal-title">
+        Edit/Delete Transaction: {{ selectedTransaction?.transactionName }}
+      </h5>
+      <button type="button" class="btn-close btn-close-white" (click)="closeModal()"></button>
+    </div>
+
+    <div class="modal-body">
+
+      @if (editTransactionForm) {
+        <form [formGroup]="editTransactionForm" (ngSubmit)="onUpdateSubmit()">
+
+          <div class="mb-3">
+            <label for="transactionName" class="form-label">Transaction Name</label>
+            <input id="transactionName"
+                   type="text"
+                   class="form-control"
+                   formControlName="transactionName">
+          </div>
+
+          <div class="mb-3">
+            <label for="transactionAmount" class="form-label">Amount</label>
+            <input id="transactionAmount"
+                   type="number"
+                   step="0.01"
+                   min="0.01"
+                   class="form-control"
+                   formControlName="transactionAmount">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Type</label>
+            <div class="d-flex gap-3">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" id="typeCredit" value="CREDIT" formControlName="transactionType">
+                <label class="form-check-label" for="typeCredit">Credit</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" id="typeDebit" value="DEBIT" formControlName="transactionType">
+                <label class="form-check-label" for="typeDebit">Debit</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="categoryId" class="form-label">Category</label>
+            <select id="categoryId" class="form-select" formControlName="categoryId">
+              <option [ngValue]="category.categoryId" *ngFor="let category of categories">{{ category.categoryName }}</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="transactionDate" class="form-label">Date</label>
+            <input id="transactionDate"
+                   type="date"
+                   class="form-control"
+                   formControlName="transactionDate">
+          </div>
+
+          <button type="submit"
+                  class="btn btn-success me-2"
+                  [disabled]="editTransactionForm.invalid || editTransactionForm.pristine">
+            <i class="bi bi-save me-1"></i> Save Changes
+          </button>
+
+        </form>
+      } @else {
+        <div class="text-center p-3">Loading transaction details...</div>
+      }
+    </div>
+
+    <div class="modal-footer d-flex justify-content-between">
+      <button type="button" class="btn btn-outline-danger" (click)="onDeleteConfirm()">
+        <i class="bi bi-trash-fill me-1"></i> Delete Transaction
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="closeModal()">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+</div>

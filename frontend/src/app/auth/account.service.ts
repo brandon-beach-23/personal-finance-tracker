@@ -15,6 +15,10 @@ export class AccountService {
   private accountsSubject = new BehaviorSubject<AccountResponse[]>([]);
   public accounts$: Observable<AccountResponse[]> = this.accountsSubject.asObservable();
 
+  private selectedAccountSubject = new BehaviorSubject<AccountResponse | null>(null);
+  public selectedAccountSubject$ = this.selectedAccountSubject.asObservable();
+
+
   constructor() { }
 
   // --- CREATE ---

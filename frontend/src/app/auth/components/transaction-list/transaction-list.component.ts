@@ -2,9 +2,12 @@ import
 {Component, EventEmitter, inject, OnInit, Output, signal} from '@angular/core';
 import {TransactionService} from "../../transaction.service";
 import {TransactionResponse} from "../../models/transaction-response.model";
-import {filter, Observable, switchMap} from "rxjs";
+import {empty, filter, Observable, switchMap} from "rxjs";
 import {CommonModule, CurrencyPipe, DatePipe} from "@angular/common";
 import {AddTransactionModalComponent} from "../add-transaction-modal/add-transaction-modal.component";
+import {
+  EditDeleteTransactionModalComponent
+} from "../edit-delete-transaction-modal/edit-delete-transaction-modal.component";
 
 @Component({
   selector: 'app-transaction-list',
@@ -13,7 +16,8 @@ import {AddTransactionModalComponent} from "../add-transaction-modal/add-transac
     CurrencyPipe,
     DatePipe,
     CommonModule,
-    AddTransactionModalComponent
+    AddTransactionModalComponent,
+    EditDeleteTransactionModalComponent
   ],
   templateUrl: './transaction-list.component.html',
   styleUrl: './transaction-list.component.css'
@@ -24,6 +28,8 @@ export class TransactionListComponent implements OnInit{
   public selectedAccountName$: Observable<string | null>;
   public selectedTransactionId$: Observable<number | null>;
   public selectedTransactionName$: Observable<string | null>;
+  public transactions$ = this.transactionService.transactions$;
+
 
 
   constructor() {
@@ -60,21 +66,20 @@ export class TransactionListComponent implements OnInit{
 
     this.transactionService.selectedAccountId$.pipe(
       filter((id): id is number => id !== null),
-      switchMap(accountId => {
-        return this.transactionService.getTransactionsByAccountId(accountId);
-      })
-    )
-      .subscribe(transactions => {
-        this.transactions.set(transactions);
-      });
+      switchMap(accountId => this.transactionService.getTransactionsByAccountId(accountId))).subscribe();
   }
 
   selectTransaction(transaction: TransactionResponse): void {
-    console.log('Transaction selected:', transaction.transactionName);
+    console.log('TransactionName selected:', transaction.transactionName);
+    console.log('TransactionId selected:', transaction.transactionId);
     this.transactionSelected.emit(transaction);
     this.transactionService.setSelectedTransactionId(transaction.transactionId);
     this.transactionService.setSelectedTransactionName(transaction.transactionName);
   }
 
+
+  trackByTransactionId(index: number, transaction: TransactionResponse): number {
+    return transaction.transactionId;
+  }
 
 }

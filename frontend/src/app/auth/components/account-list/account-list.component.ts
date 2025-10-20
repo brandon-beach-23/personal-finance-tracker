@@ -22,8 +22,11 @@ export class AccountListComponent implements OnInit {
   private accountService = inject(AccountService);
   private transactionService = inject(TransactionService);
 
+  public selectedAccount$ = this.transactionService.selectedAccount$;
+
+
   // Expose the Observable stream directly to the template
-  public checkingAccounts$!: Observable<AccountResponse[]>;
+  public accounts$!: Observable<AccountResponse[]>;
 
   public selectedAccountName$!: Observable<string | null>;
 
@@ -55,11 +58,7 @@ export class AccountListComponent implements OnInit {
 
   ngOnInit(): void {
     // 1. Filter the account stream (or just assign the main stream)
-    this.checkingAccounts$ = this.accountService.accounts$.pipe(
-      map(allAccounts =>
-        allAccounts.filter(account => account.accountType === 'CHECKING')
-    )
-    );
+    this.accounts$ = this.accountService.accounts$;
     this.selectedAccountName$ = this.transactionService.selectedAccountName$;
     // 2. Trigger the HTTP fetch operation.
     this.accountService.getAccounts().subscribe();

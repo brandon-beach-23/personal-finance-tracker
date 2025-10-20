@@ -19,11 +19,10 @@
 
   <div class="card-body p-0">
     <ul class="list-group list-group-flush">
-      @if (transactions().length > 0) {
-
-        @for (transaction of transactions(); track transaction.transactionId) {
-
-          <li class="list-group-item d-flex justify-content-between align-items-center py-3 transaction-item"
+      <ng-container *ngIf="transactions$ | async as transactions">
+        <ng-container *ngIf="transactions.length > 0; else empty">
+            <li class="list-group-item d-flex justify-content-between align-items-center py-3 transaction-item"
+                *ngFor="let transaction of transactions; trackBy: trackByTransactionId"
               (click)="selectTransaction(transaction)"
 
               [ngClass]="{
@@ -45,24 +44,25 @@
             </div>
 
             <div class="ms-auto text-end">
-            <span class="fw-bolder fs-5"
-                  [class.text-success]="transaction.transactionType === 'CREDIT'"
-                  [class.text-danger]="transaction.transactionType === 'DEBIT'">
-            <ng-container *ngIf="transaction.transactionType === 'CREDIT'">+</ng-container>
+              <span class="fw-bolder fs-5"
+                [class.text-success]="transaction.transactionType === 'CREDIT'"
+                [class.text-danger]="transaction.transactionType === 'DEBIT'">
 
-    <ng-container *ngIf="transaction.transactionType === 'DEBIT'">
-      ({{ transaction.transactionAmount | currency:'USD' }})
-    </ng-container>
-
-    <ng-container *ngIf="transaction.transactionType === 'CREDIT'">
-      {{ transaction.transactionAmount | currency:'USD' }}
-    </ng-container>
-            </span>
+              {{
+                transaction.transactionType === 'DEBIT'
+                  ? ('(' + (transaction.transactionAmount | currency:'USD') + ')')
+                  : ('+' + (transaction.transactionAmount | currency:'USD'))
+              }}
+             </span>
             </div>
           </li>
-        }
-      } @else {
-      }
+        </ng-container>
+      </ng-container>
+
+      <ng-template #empty>
+        <li class="list-group-item text-center text-muted">No transactions found.</li>
+
+      </ng-template>
     </ul>
   </div>
 
@@ -71,7 +71,9 @@
   (closeModal)="closeAddTransactionModal()">
 </app-add-transaction-modal>
 
-<!--<app-edit-delete-account-modal-->
-<!--  *ngIf="isEditDeleteTransactionModalOpen()"-->
-<!--  (close)="closeEditDeleteTransactionModal()">-->
-<!--</app-edit-delete-account-modal>-->
+<app-edit-delete-transaction-modal
+  *ngIf="isEditDeleteTransactionModalOpen()"
+  (close)="closeEditDeleteTransactionModal()"
+
+  [transactionId]="transactionService.selectedTransactionId$ | async">
+</app-edit-delete-transaction-modal>

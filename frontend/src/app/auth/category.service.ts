@@ -34,7 +34,7 @@ export class CategoryService {
       catchError(error => {
         console.error('Error fetching categories', error);
         this.categoriesSubject.next([]);
-        return throwError(() => new Error('Category fetch failed'));
+        return throwError(() => new Error('Category fetch failed')) as Observable<CategoryResponse[]>;
       })
     );
   }

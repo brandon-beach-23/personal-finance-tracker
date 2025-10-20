@@ -99,6 +99,10 @@ public class TransactionServiceImpl implements TransactionService {
     @Transactional
     public TransactionResponse updateTransaction(Long transactionId, TransactionRequest transactionRequest, String username) {
 
+
+        System.out.println("Updating transaction ID: " + transactionId);
+        System.out.println("Incoming account ID: " + transactionRequest.getAccountId());
+
         //Find the existing transaction
         Transaction existingTransaction = transactionRepository.findById(transactionId)
                 .orElseThrow(() -> new ResourceNotFoundException("Transaction not found"));
@@ -206,6 +210,7 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
         List<Transaction> transactions = transactionRepository.findByAccountId(accountId);
+        System.out.println("Fetched transactions: " + transactions.size());
         return transactions.stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
@@ -238,13 +243,16 @@ public class TransactionServiceImpl implements TransactionService {
 
     private TransactionResponse convertToDto(Transaction transaction) {
         TransactionResponse response = new TransactionResponse();
-        response.setAccountId(transaction.getId());
+        System.out.println("Converting transaction: " + transaction.getTransactionId());
+
+        response.setTransactionId(transaction.getTransactionId());
         response.setAccountId(transaction.getAccount().getId());
         response.setCategoryName(transaction.getCategory().getName());
         response.setTransactionAmount(transaction.getAmount());
         response.setTransactionType(transaction.getTransactionType().toString());
         response.setTransactionName(transaction.getName());
         response.setTransactionDate(transaction.getDate());
+
         return response;
     }
 

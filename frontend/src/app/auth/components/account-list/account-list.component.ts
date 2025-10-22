@@ -27,7 +27,6 @@ export class AccountListComponent implements OnInit {
 
   // Expose the Observable stream directly to the template
   public accounts$!: Observable<AccountResponse[]>;
-
   public selectedAccountName$!: Observable<string | null>;
 
   // === State Management for UI/Modal ===

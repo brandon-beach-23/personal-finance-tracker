@@ -6,15 +6,9 @@ public class SavingsGoalRequest {
     private String goalName;
     private BigDecimal targetAmount;
     private Long savingsAccountId;
-    private Long userId;
+
 
     public SavingsGoalRequest() {
-    }
-
-    public SavingsGoalRequest(String goalName, BigDecimal targetAmount, Long savingsAccountId) {
-        this.goalName = goalName;
-        this.targetAmount = targetAmount;
-        this.savingsAccountId = savingsAccountId;
     }
 
     public String getGoalName() {
@@ -41,11 +35,5 @@ public class SavingsGoalRequest {
         this.savingsAccountId = savingsAccountId;
     }
 
-    public Long getUserId() {
-        return userId;
-    }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
 }

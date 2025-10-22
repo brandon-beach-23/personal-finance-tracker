@@ -8,19 +8,13 @@ public class SavingsGoalResponse {
     private String goalName;
     private BigDecimal targetAmount;
     private Long savingsAccountId;
-    private Long userId;
+
 
     // Constructors, Getters, and Setters
     public SavingsGoalResponse() {
     }
 
-    public SavingsGoalResponse(Long id, String goalName, BigDecimal targetAmount, Long savingsAccountId, Long userId) {
-        this.id = id;
-        this.goalName = goalName;
-        this.targetAmount = targetAmount;
-        this.savingsAccountId = savingsAccountId;
-        this.userId = userId;
-    }
+
 
     public Long getId() {
         return id;
@@ -54,11 +48,5 @@ public class SavingsGoalResponse {
         this.savingsAccountId = savingsAccountId;
     }
 
-    public Long getUserId() {
-        return userId;
-    }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
 }

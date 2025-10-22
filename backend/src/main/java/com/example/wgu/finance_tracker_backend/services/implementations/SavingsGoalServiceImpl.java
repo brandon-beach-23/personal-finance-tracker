@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.Optional;
 
 @Service
@@ -32,35 +33,36 @@ public class SavingsGoalServiceImpl implements SavingsGoalService {
 
     @Override
     @Transactional
-    public SavingsGoalResponse createSavingsGoal(SavingsGoalRequest savingsGoalRequest) {
+    public SavingsGoalResponse createSavingsGoal(SavingsGoalRequest savingsGoalRequest, Principal principal) {
 
         //Check if the account exists from the account id
         Account account = accountRepository.findById(savingsGoalRequest.getSavingsAccountId())
                 .orElseThrow(() -> new ResourceNotFoundException("Account Not Found"));
 
         //Check if the account is a savings account
-        if(!(account instanceof SavingsAccount)){
+        if (!(account instanceof SavingsAccount)) {
             throw new IllegalArgumentException("Goal must be created on SavingsAccount");
         }
 
         //Check if the user exists
-        User user = userRepository.findById(savingsGoalRequest.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
+        String username = principal.getName();
+        User user = userRepository.findByUserName(username)
+                .orElseThrow(() -> new ResourceNotFoundException("Authenticated User Not Found"));
 
         //Check if the user owns the account
-        if(!account.getUser().getId().equals(user.getId())){
+        if (!account.getUser().getUserName().equals(username)) {
             throw new IllegalArgumentException("User is not owner of SavingsAccount");
         }
 
         //Checks if the savings account already has a goal
         Optional<SavingsGoal> existingSavingsGoal = savingsGoalRepository.findBySavingsAccountId(savingsGoalRequest.getSavingsAccountId());
-        if(existingSavingsGoal.isPresent()){
+        if (existingSavingsGoal.isPresent()) {
             throw new IllegalArgumentException("Savings Goal already exists");
         }
 
         //Create a new savings goal
         SavingsGoal savingsGoal = new SavingsGoal();
-        savingsGoal.setUser(user);
+
         savingsGoal.setSavingsAccount((SavingsAccount) account);
         savingsGoal.setGoalName(savingsGoalRequest.getGoalName());
         savingsGoal.setTargetAmount(savingsGoalRequest.getTargetAmount());
@@ -71,30 +73,31 @@ public class SavingsGoalServiceImpl implements SavingsGoalService {
 
     @Override
     @Transactional
-    public SavingsGoalResponse updateSavingsGoal(SavingsGoalRequest savingsGoalRequest, Long id) {
+    public SavingsGoalResponse updateSavingsGoal(SavingsGoalRequest savingsGoalRequest, Long id, Principal principal) {
         //Check if the account exists from the account id
         Account account = accountRepository.findById(savingsGoalRequest.getSavingsAccountId())
                 .orElseThrow(() -> new ResourceNotFoundException("Account Not Found"));
 
         //Check if the account is a savings account
-        if(!(account instanceof SavingsAccount)){
+        if (!(account instanceof SavingsAccount)) {
             throw new IllegalArgumentException("Goal must be created on SavingsAccount");
         }
 
         //Check if the user exists
-        User user = userRepository.findById(savingsGoalRequest.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("User Not Found"));
+        String username = principal.getName();
+        User user = userRepository.findByUserName(username)
+                .orElseThrow(() -> new ResourceNotFoundException("Authorized User Not Found"));
 
         //Check if the user owns the account
-        if(!account.getUser().getId().equals(user.getId())){
+        if (!account.getUser().getUserName().equals(username)) {
             throw new IllegalArgumentException("User is not owner of SavingsAccount");
         }
 
         //Check if the savings goal exists
         SavingsGoal savingsGoal = savingsGoalRepository.findById(id)
-                .orElseThrow(()-> new ResourceNotFoundException("Savings goal not found."));
+                .orElseThrow(() -> new ResourceNotFoundException("Savings goal not found."));
 
-        if(!savingsGoal.getUser().getId().equals(user.getId())){
+        if (!savingsGoal.getSavingsAccount().getUser().getUserName().equals(username)) {
             throw new IllegalArgumentException("User is not owner of SavingsGoal");
         }
 
@@ -109,9 +112,17 @@ public class SavingsGoalServiceImpl implements SavingsGoalService {
 
     @Override
     @Transactional
-    public void deleteSavingsGoal(Long id) {
+    public void deleteSavingsGoal(Long id, Principal principal) {
+
+        String username = principal.getName();
+        //Check if the savings goal exists
         SavingsGoal savingsGoal = savingsGoalRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Savings goal not found."));
+
+        if (!savingsGoal.getSavingsAccount().getUser().getUserName().equals(username)) {
+            throw new IllegalArgumentException("User is not owner of SavingsGoal");
+        }
+
         savingsGoalRepository.delete(savingsGoal);
     }
 
@@ -133,7 +144,7 @@ public class SavingsGoalServiceImpl implements SavingsGoalService {
         savingsGoalResponse.setSavingsAccountId(savingsGoal.getSavingsAccount().getId());
         savingsGoalResponse.setGoalName(savingsGoal.getGoalName());
         savingsGoalResponse.setTargetAmount(savingsGoal.getTargetAmount());
-        savingsGoalResponse.setUserId(savingsGoal.getUser().getId());
+
         return savingsGoalResponse;
     }
 

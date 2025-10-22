@@ -8,11 +8,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/savingsgoals")
+@RequestMapping("/api/savings-goals")
 public class SavingsGoalController {
     private final SavingsGoalService savingsGoalService;
 
@@ -22,20 +23,20 @@ public class SavingsGoalController {
     }
 
     @PostMapping
-    public ResponseEntity<SavingsGoalResponse> createSavingsGoal(@RequestBody SavingsGoalRequest savingsGoalRequest) {
-        SavingsGoalResponse savingsGoalResponse = savingsGoalService.createSavingsGoal(savingsGoalRequest);
+    public ResponseEntity<SavingsGoalResponse> createSavingsGoal(@RequestBody SavingsGoalRequest savingsGoalRequest, Principal principal) {
+        SavingsGoalResponse savingsGoalResponse = savingsGoalService.createSavingsGoal(savingsGoalRequest, principal);
         return new ResponseEntity<>(savingsGoalResponse, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SavingsGoalResponse> updateSavingsGoal(@RequestBody SavingsGoalRequest savingsGoalRequest, @PathVariable("id") Long id){
-        SavingsGoalResponse savingsGoalResponse = savingsGoalService.updateSavingsGoal(savingsGoalRequest, id);
+    public ResponseEntity<SavingsGoalResponse> updateSavingsGoal(@RequestBody SavingsGoalRequest savingsGoalRequest, @PathVariable("id") Long id, Principal principal) {
+        SavingsGoalResponse savingsGoalResponse = savingsGoalService.updateSavingsGoal(savingsGoalRequest, id, principal);
         return ResponseEntity.ok(savingsGoalResponse);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSavingsGoal(@PathVariable("id") Long id) {
-        savingsGoalService.deleteSavingsGoal(id);
+    public ResponseEntity<Void> deleteSavingsGoal(@PathVariable("id") Long id, Principal principal) {
+        savingsGoalService.deleteSavingsGoal(id, principal);
         return ResponseEntity.noContent().build();
     }
 

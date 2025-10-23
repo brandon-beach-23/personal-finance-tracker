@@ -4,6 +4,7 @@ import {Router} from "@angular/router";
 import {AccountListComponent} from "../auth/components/account-list/account-list.component";
 import {AccountModalComponent} from "../auth/components/account-modal/account-modal.component";
 import {TransactionListComponent} from "../auth/components/transaction-list/transaction-list.component";
+import {SavingsGoalListComponent} from "../auth/components/savings-goal-list/savings-goal-list.component";
 
 @Component({
   selector: 'app-dashboard',
@@ -11,7 +12,8 @@ import {TransactionListComponent} from "../auth/components/transaction-list/tran
   imports: [
     AccountListComponent,
     AccountModalComponent,
-    TransactionListComponent
+    TransactionListComponent,
+    SavingsGoalListComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'

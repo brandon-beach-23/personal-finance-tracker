@@ -1,0 +1,47 @@
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+  <ng-container *ngIf="savingsAccounts$ | async as savingsAccounts">
+    <div class="col" *ngFor="let account of savingsAccounts">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title text-success">{{ account.accountName }}</h5>
+          <p class="mb-1"><strong>Balance:</strong> ${{ account.balance | number:'1.2-2' }}</p>
+
+          <ng-container *ngIf="account.savingsGoalResponse; else noGoal">
+            <p class="mb-1"><strong>Goal:</strong> {{ account.savingsGoalResponse.goalName }}</p>
+            <p class="mb-2"><strong>Target:</strong> ${{ account.savingsGoalResponse.targetAmount | number:'1.2-2' }}</p>
+
+            <!-- Progress Bar -->
+            <div class="progress mb-3" style="height: 20px;">
+              <div class="progress-bar bg-success" role="progressbar"
+                   [style.width.%]="(account.balance / account.savingsGoalResponse.targetAmount) * 100"
+                   [attr.aria-valuenow]="account.balance"
+                   [attr.aria-valuemin]="0"
+                   [attr.aria-valuemax]="account.savingsGoalResponse.targetAmount">
+                {{ (account.balance / account.savingsGoalResponse.targetAmount) * 100 | number:'1.0-0' }}%
+              </div>
+            </div>
+
+            <!-- Edit/Delete Buttons -->
+            <div class="d-flex gap-2">
+              <button class="btn btn-outline-primary btn-sm" (click)="openEditDeleteSavingsGoalModal(account)">
+                Edit Goal
+              </button>
+<!--              <button class="btn btn-outline-danger btn-sm" (click)="confirmDeleteGoal(account)">-->
+<!--                Delete Goal-->
+<!--              </button>-->
+            </div>
+          </ng-container>
+
+          <!-- No Goal Template -->
+          <ng-template #noGoal>
+            <p class="text-muted fst-italic">No savings goal set.</p>
+            <button class="btn btn-outline-success btn-sm" (click)="openAddSavingsGoalModal(account)">
+              Add Goal
+            </button>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+

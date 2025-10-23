@@ -25,7 +25,11 @@ public class SavingsGoalController {
     @PostMapping
     public ResponseEntity<SavingsGoalResponse> createSavingsGoal(@RequestBody SavingsGoalRequest savingsGoalRequest, Principal principal) {
         SavingsGoalResponse savingsGoalResponse = savingsGoalService.createSavingsGoal(savingsGoalRequest, principal);
-        return new ResponseEntity<>(savingsGoalResponse, HttpStatus.CREATED);
+        if (savingsGoalResponse == null) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+        return ResponseEntity.ok(savingsGoalResponse);
     }
 
     @PutMapping("/{id}")
@@ -47,7 +51,7 @@ public class SavingsGoalController {
     }
 
 
-    @GetMapping
+    @GetMapping("/savingsAccountId")
     public ResponseEntity<SavingsGoalResponse> getSavingsGoalsBySavingsAccountId(@RequestParam("savingsAccountId")Long savingsAccountId) {
         Optional<SavingsGoalResponse> savingsGoalResponse = savingsGoalService.getBySavingsAccountId(savingsAccountId);
         return savingsGoalResponse.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());

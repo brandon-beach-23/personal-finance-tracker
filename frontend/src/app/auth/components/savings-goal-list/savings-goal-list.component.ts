@@ -4,6 +4,7 @@ import {SavingsAccountResponse} from "../../models/savings-account-response.mode
 import {SavingsGoalService} from "../../savings-goal.service";
 import {AccountService} from "../../account.service";
 import {AsyncPipe, DecimalPipe, NgForOf, NgIf} from "@angular/common";
+import {AddSavingsGoalModalComponent} from "../add-savings-goal-modal/add-savings-goal-modal.component";
 
 @Component({
   selector: 'app-savings-goal-list',
@@ -12,7 +13,8 @@ import {AsyncPipe, DecimalPipe, NgForOf, NgIf} from "@angular/common";
     DecimalPipe,
     AsyncPipe,
     NgIf,
-    NgForOf
+    NgForOf,
+    AddSavingsGoalModalComponent
   ],
   templateUrl: './savings-goal-list.component.html',
   styleUrl: './savings-goal-list.component.css'
@@ -41,6 +43,7 @@ export class SavingsGoalListComponent implements OnInit{
 
   closeAddSavingsGoalModal() {
     this.isAddSavingsGoalModalOpen.set(false);
+    this.accountService.getAccounts().subscribe();
   }
 
   openEditDeleteSavingsGoalModal(account: SavingsAccountResponse) {
@@ -50,6 +53,7 @@ export class SavingsGoalListComponent implements OnInit{
 
   closeEditDeleteSavingsGoalModal() {
     this.isEditDeleteSavingsGoalModalOpen.set(false);
+    this.accountService.getAccounts().subscribe();
   }
 
   refreshAccounts() {

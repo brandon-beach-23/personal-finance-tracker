@@ -45,3 +45,8 @@
   </ng-container>
 </div>
 
+<app-add-savings-goal-modal
+  *ngIf="isAddSavingsGoalModalOpen()"
+  [selectedAccount]="selectedAccount()"
+  (closeModal)="closeAddSavingsGoalModal()">
+</app-add-savings-goal-modal>

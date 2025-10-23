@@ -2,12 +2,12 @@ package com.example.wgu.finance_tracker_backend.services.implementations;
 
 import com.example.wgu.finance_tracker_backend.DTOs.AccountRequest;
 import com.example.wgu.finance_tracker_backend.DTOs.AccountResponse;
+import com.example.wgu.finance_tracker_backend.DTOs.SavingsAccountResponse;
+import com.example.wgu.finance_tracker_backend.DTOs.SavingsGoalResponse;
 import com.example.wgu.finance_tracker_backend.exceptions.ResourceNotFoundException;
-import com.example.wgu.finance_tracker_backend.models.Account;
-import com.example.wgu.finance_tracker_backend.models.AccountType;
-import com.example.wgu.finance_tracker_backend.models.SavingsAccount;
-import com.example.wgu.finance_tracker_backend.models.User;
+import com.example.wgu.finance_tracker_backend.models.*;
 import com.example.wgu.finance_tracker_backend.repositories.AccountRepository;
+import com.example.wgu.finance_tracker_backend.repositories.SavingsGoalRepository;
 import com.example.wgu.finance_tracker_backend.repositories.UserRepository;
 import com.example.wgu.finance_tracker_backend.services.interfaces.AccountService;
 import jakarta.transaction.Transactional;
@@ -24,11 +24,13 @@ import java.util.stream.Collectors;
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
+    private final SavingsGoalRepository savingsGoalRepository;
 
     @Autowired
-    public AccountServiceImpl(AccountRepository accountRepository, UserRepository userRepository) {
+    public AccountServiceImpl(AccountRepository accountRepository, UserRepository userRepository, SavingsGoalRepository savingsGoalRepository) {
         this.accountRepository = accountRepository;
         this.userRepository = userRepository;
+        this.savingsGoalRepository = savingsGoalRepository;
     }
 
     @Override
@@ -204,25 +206,36 @@ public class AccountServiceImpl implements AccountService {
     }
 
     private AccountResponse convertToDTO(Account savedAccount) {
-        AccountResponse accountResponse = new AccountResponse();
-        accountResponse.setId(savedAccount.getId());
-        accountResponse.setAccountName(savedAccount.getAccountName());
-        accountResponse.setBalance(savedAccount.getBalance());
-        accountResponse.setUserId(savedAccount.getUser().getId());
-
-        String accountType;
         if (savedAccount instanceof SavingsAccount) {
-            accountType = "SAVINGS";
+            SavingsAccountResponse savingsResponse = new SavingsAccountResponse();
+            savingsResponse.setId(savedAccount.getId());
+            savingsResponse.setAccountName(savedAccount.getAccountName());
+            savingsResponse.setBalance(savedAccount.getBalance());
+            savingsResponse.setUserId(savedAccount.getUser().getId());
+            savingsResponse.setAccountType("SAVINGS");
+
+            // Attach savings goal if present
+
+            Optional<SavingsGoal> goalOpt = savingsGoalRepository.findBySavingsAccountId(savedAccount.getId());
+            goalOpt.ifPresent(goal -> {
+                SavingsGoalResponse goalResponse = new SavingsGoalResponse();
+                goalResponse.setId(goal.getId());
+                goalResponse.setGoalName(goal.getGoalName());
+                goalResponse.setTargetAmount(goal.getTargetAmount());
+                goalResponse.setSavingsAccountId(goal.getSavingsAccount().getId());
+
+                savingsResponse.setSavingsGoalResponse(goalResponse);
+            });
+            return savingsResponse;
         } else {
-            accountType = "CHECKING";
+            AccountResponse accountResponse = new AccountResponse();
+            accountResponse.setId(savedAccount.getId());
+            accountResponse.setAccountName(savedAccount.getAccountName());
+            accountResponse.setBalance(savedAccount.getBalance());
+            accountResponse.setUserId(savedAccount.getUser().getId());
+            accountResponse.setAccountType("CHECKING");
+            return accountResponse;
         }
-        accountResponse.setAccountType(accountType);
-
-        System.out.println(accountResponse.getId());
-        System.out.println(accountResponse.getAccountName());
-        System.out.println(accountResponse.getBalance());
-        System.out.println(accountResponse.getAccountType());
-
-        return accountResponse;
     }
+
 }

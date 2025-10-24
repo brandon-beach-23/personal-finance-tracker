@@ -13,7 +13,7 @@
         <a routerLink="/dashboard" class="nav-link active">Dashboard</a>
       </li>
       <li class="nav-item">
-        <a routerLink="/investments" class="nav-link">Investment Simulation</a>
+        <a routerLink="/investments" class="nav-link">Spending Report</a>
       </li>
     </ul>
 
@@ -26,7 +26,7 @@
 
 <main class="container py-4">
 
-  <!-- First Row: Checking Accounts, Transactions, and Spending Chart -->
+  <!-- First Row: Checking Accounts, Transactions -->
   <div class="row g-4">
 
     <!-- Column 1: Checking Accounts List -->
@@ -35,20 +35,8 @@
     </div>
 
     <!-- Column 2: Transactions Detail -->
-    <div class="col-12 col-lg-4">
+    <div class="col-12 col-lg-8">
       <app-transaction-list></app-transaction-list>
-    </div>
-
-    <!-- Column 3: Spending Pie Chart -->
-    <div class="col-12 col-lg-4">
-      <div class="card h-100 shadow-sm">
-        <div class="card-body">
-          <h5 class="card-title text-primary">Spending Breakdown</h5>
-          <div class="text-center mt-5">
-            [Placeholder for Pie Chart]
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 

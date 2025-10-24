@@ -1,5 +1,5 @@
 import
-{Component, EventEmitter, inject, OnInit, Output, signal} from '@angular/core';
+{assertInInjectionContext, Component, EventEmitter, inject, OnInit, Output, signal} from '@angular/core';
 import {TransactionService} from "../../transaction.service";
 import {TransactionResponse} from "../../models/transaction-response.model";
 import {empty, filter, Observable, switchMap} from "rxjs";
@@ -8,6 +8,9 @@ import {AddTransactionModalComponent} from "../add-transaction-modal/add-transac
 import {
   EditDeleteTransactionModalComponent
 } from "../edit-delete-transaction-modal/edit-delete-transaction-modal.component";
+import {TransactionRequest} from "../../models/transaction-request.model";
+import {FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {CategoryService} from "../../category.service";
 
 @Component({
   selector: 'app-transaction-list',
@@ -17,18 +20,29 @@ import {
     DatePipe,
     CommonModule,
     AddTransactionModalComponent,
-    EditDeleteTransactionModalComponent
+    EditDeleteTransactionModalComponent,
+    ReactiveFormsModule
   ],
   templateUrl: './transaction-list.component.html',
   styleUrl: './transaction-list.component.css'
 })
 export class TransactionListComponent implements OnInit{
   public transactionService = inject(TransactionService);
+  private categoryService = inject(CategoryService);
 
   public selectedAccountName$: Observable<string | null>;
   public selectedTransactionId$: Observable<number | null>;
   public selectedTransactionName$: Observable<string | null>;
   public transactions$ = this.transactionService.transactions$;
+  filteredTransactions: TransactionResponse[] = [];
+  categories: string[] = [];
+
+
+  transactionFilterForm = new FormGroup({
+    filterType: new FormControl('name'),
+    searchTerm: new FormControl(''),
+    category: new FormControl('')
+  });
 
 
 
@@ -67,6 +81,25 @@ export class TransactionListComponent implements OnInit{
     this.transactionService.selectedAccountId$.pipe(
       filter((id): id is number => id !== null),
       switchMap(accountId => this.transactionService.getTransactionsByAccountId(accountId))).subscribe();
+
+    this.categoryService.getAllCategories().subscribe(categoryResponses => {
+      this.categories = categoryResponses.map(cat => cat.categoryName);
+    });
+
+    this.transactionService.selectedAccountId$.pipe(
+      filter((id): id is number => id !== null),
+      switchMap(accountId => this.transactionService.getTransactionsByAccountId(accountId))
+    ).subscribe();
+
+    this.transactionService.transactions$.subscribe(txns => {
+      this.transactions.set(txns);
+      this.filteredTransactions = txns;
+    });
+
+    this.transactionFilterForm.valueChanges.subscribe(filters => {
+      this.applyFilters(filters);
+    });
+
   }
 
   selectTransaction(transaction: TransactionResponse): void {
@@ -81,5 +114,20 @@ export class TransactionListComponent implements OnInit{
   trackByTransactionId(index: number, transaction: TransactionResponse): number {
     return transaction.transactionId;
   }
+
+  applyFilters(filters: any): void {
+    const { searchTerm, category } = filters;
+    const term = searchTerm.toLowerCase();
+
+    this.filteredTransactions = this.transactions().filter(tx => {
+      const matchesCategory = !category || tx.categoryName === category;
+      const matchesName = tx.transactionName.toLowerCase().includes(term);
+
+      return matchesCategory && matchesName;
+    });
+  }
+
+
+
 
 }

@@ -6,4 +6,5 @@ export interface TransactionResponse {
   transactionType: 'DEBIT' | 'CREDIT';
   accountId: number;
   transactionDate: string;
+  accountName: string;
 }

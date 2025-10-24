@@ -15,8 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -216,28 +218,15 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<TransactionResponse> getTransactionsByAccountIdAndName(Long accountId, String name) {
-        return List.of();
-    }
+    public List<TransactionResponse> getTransactionsByMonthAndYear(int month, int year, Principal principal){
+        String username = principal.getName();
+        List<Transaction> transactions = transactionRepository.findByUserAndMonthAndYear(username, month, year);
 
-    @Override
-    public List<TransactionResponse> getTransactionsByAccountIdAndCategory(Long accountId, Category category) {
-        return List.of();
-    }
+        List<Transaction> debitsOnly = transactions.stream().filter(transaction ->
+                transaction.getTransactionType() == TransactionType.DEBIT)
+                .collect(Collectors.toList());
 
-    @Override
-    public List<TransactionResponse> getTransactionsByAccountIdAndAmount(Long accountId, BigDecimal amount) {
-        return List.of();
-    }
-
-    @Override
-    public List<TransactionResponse> getTransactionsByAccountIdAndTransactionType(Long accountId, TransactionType transactionType) {
-        return List.of();
-    }
-
-    @Override
-    public BigDecimal getSumAmountByAccountIdAndTransactionType(Long accountid, TransactionType transactionType) {
-        return null;
+        return debitsOnly.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     private TransactionResponse convertToDto(Transaction transaction) {
@@ -246,6 +235,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         response.setTransactionId(transaction.getTransactionId());
         response.setAccountId(transaction.getAccount().getId());
+        response.setAccountName(transaction.getAccount().getAccountName());
         response.setCategoryName(transaction.getCategory().getName());
         response.setTransactionAmount(transaction.getAmount());
         response.setTransactionType(transaction.getTransactionType().toString());

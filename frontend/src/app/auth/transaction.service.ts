@@ -144,4 +144,17 @@ export class TransactionService {
     );
   }
 
+  getTransactionsByMonthAndYear(month: number, year: number): Observable<TransactionResponse[]> {
+    const url = `${this.apiUrl}/report?month=${month}&year=${year}`;
+    return this.http.get<TransactionResponse[]>(url).pipe(
+      tap(report => {
+        console.log(`Service: Fetched ${report.length} transactions for ${month}/${year}`);
+      }),
+      catchError(error => {
+        console.error('Error fetching spending report:', error);
+        return throwError(() => new Error('Spending report fetch failed'));
+      })
+    );
+  }
+
 }

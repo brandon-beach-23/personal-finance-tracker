@@ -1,10 +1,33 @@
-<header>
-  <h1></h1>
-  <nav></nav>
+<header class="p-3 bg-light border-bottom">
+  <!-- Key Change: Removed justify-content-between. Using d-flex align-items-center for the row. -->
+  <nav class="container-fluid d-flex align-items-center">
+
+    <!-- 1. LEFT: Welcome Heading -->
+    <h3 class="mb-0">
+      Welcome, {{ getCurrentUserName() }}
+    </h3>
+
+    <!-- 2. CENTER: Nav Links. mx-auto pushes this element to the absolute center. -->
+    <ul class="nav nav-pills mx-auto">
+      <li class="nav-item">
+        <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">Dashboard</a>
+      </li>
+      <li class="nav-item">
+        <a routerLink="/report" routerLinkActive="active" class="nav-link">Spending Report</a>
+      </li>
+    </ul>
+
+    <!-- 3. RIGHT: Logout Button. The centered pills push this element to the far right. -->
+    <button class="btn btn-danger" (click) = logout()>
+      Logout
+    </button>
+  </nav>
 </header>
 
-<main>
+<main class="container py-4">
   <router-outlet></router-outlet>
+
+
 </main>
 
 <footer></footer>

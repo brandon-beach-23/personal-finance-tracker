@@ -7,6 +7,7 @@ import com.example.wgu.finance_tracker_backend.models.TransactionType;
 
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,10 +21,6 @@ public interface TransactionService {
     List<TransactionResponse> getTransactionsByAccountId(Long accountId, String username);
 
     //Reporting and Searching - implemented at a later date
-    List<TransactionResponse> getTransactionsByAccountIdAndName(Long accountId, String name);
-    List<TransactionResponse> getTransactionsByAccountIdAndCategory(Long accountId, Category category);
-    List<TransactionResponse> getTransactionsByAccountIdAndAmount(Long accountId, BigDecimal amount);
-    List<TransactionResponse> getTransactionsByAccountIdAndTransactionType(Long accountId, TransactionType transactionType);
-    BigDecimal getSumAmountByAccountIdAndTransactionType(Long accountid, TransactionType transactionType);
+    List<TransactionResponse> getTransactionsByMonthAndYear(int month, int year, Principal principal);
 
 }

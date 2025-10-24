@@ -20,7 +20,9 @@ export class AuthGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean> | UrlTree | Promise<boolean | UrlTree> | boolean | UrlTree{
 
+    console.log('AuthGuard checking route:', state.url);
     if(this.authService.isLoggedIn()) {
+      console.log('AuthGuard: access granted');
       return true;
     } else {
       console.warn('Route access denied. Redirecting to login.');

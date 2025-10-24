@@ -58,4 +58,10 @@ public class TransactionController {
         List<TransactionResponse> transactionResponses = transactionService.getTransactionsByAccountId(accountId, username);
         return ResponseEntity.ok(transactionResponses);
     }
+
+    @GetMapping("/report")
+    public ResponseEntity<List<TransactionResponse>> getTransactionsByMonthAndYear(@RequestParam int month, @RequestParam int year, Principal principal) {
+        List<TransactionResponse> report = transactionService.getTransactionsByMonthAndYear(month, year, principal);
+        return ResponseEntity.ok(report);
+    }
 }

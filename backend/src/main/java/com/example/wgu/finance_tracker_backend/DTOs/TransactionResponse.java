@@ -12,8 +12,17 @@ public class TransactionResponse {
     private String transactionType;
     private Long accountId;
     private LocalDate transactionDate;
+    private String accountName;
 
     public TransactionResponse() {
+    }
+
+    public String getAccountName() {
+        return accountName;
+    }
+
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
     }
 
     public Long getTransactionId() {

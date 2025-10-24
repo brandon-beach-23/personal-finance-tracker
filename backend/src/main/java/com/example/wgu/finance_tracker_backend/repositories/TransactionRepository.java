@@ -18,13 +18,7 @@ import java.util.Optional;
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
     List<Transaction> findByTransactionId(Long transactionId);
     List<Transaction> findByAccountId(Long accountId);
-    List<Transaction> findByCategoryAndAccountId(Category category, Long accountId);
-    List<Transaction> findByDateAndAccountId(LocalDateTime date, Long accountId);
-    List<Transaction> findByAmountAndAccountId(BigDecimal amount, Long accountId);
-    List<Transaction> findByNameAndAccountId(String name, Long accountId);
-    List<Transaction> findByTransactionTypeAndAccountId(TransactionType transactionType, Long accountId);
-    boolean existsByTransactionIdAndAccountId(Long transactionId, Long accountId);
 
-    @Query("SELECT SUM(t.amount) FROM Transaction t WHERE t.account.id = :accountId AND t.transactionType = :transactionType")
-    BigDecimal getSumAmountByAccountIdAndTransactionType(@Param("accountId") Long accountId,@Param("transactionType") TransactionType transactionType);
+    @Query("SELECT t FROM Transaction t WHERE t.account.user.userName = :username AND MONTH(t.date) = :month AND YEAR(t.date) = :year")
+    List<Transaction> findByUserAndMonthAndYear(@Param("username") String username, @Param("month") int month, @Param("year") int year);
 }

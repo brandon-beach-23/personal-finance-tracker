@@ -3,6 +3,7 @@ import {DashboardComponent} from "./dashboard/dashboard.component";
 import {RegistrationComponent} from  './auth/components/registration/registration.component';
 import {LoginComponent} from "./auth/components/login/login.component";
 import {AuthGuard} from "./auth/auth.guard";
+import {SpendingReportComponent} from "./auth/components/spending-report/spending-report.component";
 
 export const routes: Routes = [
   // Default path if logged in
@@ -13,11 +14,7 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
 
   // Protected Routes (Uses AuthGuard)
-   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] }
-
-
-
-  // Route 5: Catch-all for 404
-  // { path: '**', component: NotFoundComponent }
+   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
+   { path: 'report', component: SpendingReportComponent, canActivate: [AuthGuard] }
 
 ];

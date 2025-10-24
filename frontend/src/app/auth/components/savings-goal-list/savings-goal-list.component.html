@@ -26,9 +26,10 @@
               <button class="btn btn-outline-primary btn-sm" (click)="openEditSavingsGoalModal(account)">
                 Edit Goal
               </button>
-<!--              <button class="btn btn-outline-danger btn-sm" (click)="confirmDeleteGoal(account)">-->
-<!--                Delete Goal-->
-<!--              </button>-->
+              <button *ngIf="account.savingsGoalResponse" (click)="confirmDeleteGoal(account)" class="btn btn-danger">
+                Delete Goal
+              </button>
+
             </div>
           </ng-container>
 

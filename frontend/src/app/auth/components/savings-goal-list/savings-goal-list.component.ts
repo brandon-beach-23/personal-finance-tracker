@@ -31,6 +31,7 @@ export class SavingsGoalListComponent implements OnInit{
   isEditSavingsGoalModalOpen = signal(false);
 
   selectedAccount = signal<SavingsAccountResponse | null>(null);
+  responseMessage: string = '';
 
   constructor(private accountService: AccountService, private savingsGoalService: SavingsGoalService) {  }
 
@@ -63,6 +64,26 @@ export class SavingsGoalListComponent implements OnInit{
 
   refreshAccounts() {
     this.accountService.getAccounts();
+  }
+
+  confirmDeleteGoal(account: SavingsAccountResponse): void {
+    const goal = account.savingsGoalResponse;
+    if (!goal?.id) return;
+
+    const confirmed = window.confirm(`Are you sure you want to delete the goal "${goal.goalName}"?`);
+    if (!confirmed) return;
+
+    this.savingsGoalService.deleteGoal(goal.id).subscribe({
+      next: () => {
+        this.responseMessage = 'Savings goal deleted successfully.';
+        this.accountService.getAccounts().subscribe(); // Refresh list or close modal
+        this.selectedAccount.set(null);
+      },
+      error: (err) => {
+        this.responseMessage = 'Delete failed. Please check the console for details.';
+        console.error('Delete failed', err);
+      }
+    });
   }
 
 

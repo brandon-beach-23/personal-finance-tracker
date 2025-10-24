@@ -24,6 +24,7 @@ export class SavingsGoalService {
   }
 
   deleteGoal(id: number): Observable<void> {
+    console.log('Angular Service: ', id);
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 

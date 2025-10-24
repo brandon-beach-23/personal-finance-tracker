@@ -123,6 +123,9 @@ public class SavingsGoalServiceImpl implements SavingsGoalService {
             throw new IllegalArgumentException("User is not owner of SavingsGoal");
         }
 
+        SavingsAccount account = savingsGoal.getSavingsAccount();
+        account.setSavingsGoal(null);
+        accountRepository.save(account);
         savingsGoalRepository.delete(savingsGoal);
     }
 

@@ -61,10 +61,10 @@ public class AccountServiceImpl implements AccountService {
         newAccount.setAccountName(accountRequest.getAccountName());
 
         try {
-            // This is the conversion that the entity's setter requires (e.g., AccountType.CHECKING)
+
             newAccount.setAccountType(AccountType.valueOf(requestedType));
         } catch (IllegalArgumentException e) {
-            // Fallback for types that shouldn't exist based on our if/else logic, but ensures safety
+
             System.err.println("Critical Error: Failed to map requested type [" + requestedType + "] to AccountType enum. Setting to default CHECKING.");
             newAccount.setAccountType(AccountType.CHECKING);
         }
@@ -85,13 +85,7 @@ public class AccountServiceImpl implements AccountService {
 
     }
 
-    /**
-     * Updates an existing account's name and type, performing a strict ownership check.
-     * @param accountRequest DTO containing new details (name, type).
-     * @param accountId The ID of the account to update.
-     * @param username The username of the authenticated user.
-     * @return The updated AccountResponse DTO.
-     */
+
     @Transactional
     public AccountResponse updateAccount(AccountRequest accountRequest, Long accountId, String username) {
 
@@ -120,17 +114,10 @@ public class AccountServiceImpl implements AccountService {
             throw new IllegalArgumentException("Invalid account type: " + requestedType);
         }
 
-        // NOTE: Balance is intentionally NOT updated here, per user requirement.
-
         Account updatedAccount = accountRepository.save(existingAccount);
         return convertToDTO(updatedAccount);
     }
 
-    /**
-     * Deletes an account, performing a strict ownership check.
-     * @param accountId The ID of the account to delete.
-     * @param username The username of the authenticated user.
-     */
     @Transactional
     public void deleteAccount(Long accountId, String username) {
 
@@ -151,11 +138,7 @@ public class AccountServiceImpl implements AccountService {
         try {
             accountRepository.delete(accountToDelete);
         } catch (DataIntegrityViolationException e) {
-            // ⭐️ FIX: Catch the database error (likely caused by foreign key constraints)
-            // and throw a more descriptive error that should map to a 409 Conflict or 400 Bad Request.
 
-            // This exception should be caught by your global exception handler and mapped to a 409 or 400.
-            // It's descriptive for the frontend.
             throw new IllegalStateException("Cannot delete account ID " + accountId +
                     " because it has associated financial data (transactions, goals, etc.). " +
                     "Please delete all linked data first.", e);
@@ -182,14 +165,6 @@ public class AccountServiceImpl implements AccountService {
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
-
-    /**
-     * Retrieves a single account by ID, ensuring ownership by the authenticated user.
-     * This supports the GET /api/accounts/{id} endpoint.
-     * @param accountId The ID of the account to retrieve.
-     * @param username The username of the authenticated user.
-     * @return An Optional containing the AccountResponse DTO.
-     */
 
     public Optional<AccountResponse> getAccountById(Long accountId, String username) {
         // 1. Fetch the Account

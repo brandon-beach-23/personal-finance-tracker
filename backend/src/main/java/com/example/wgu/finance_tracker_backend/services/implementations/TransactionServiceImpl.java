@@ -57,8 +57,7 @@ public class TransactionServiceImpl implements TransactionService {
             throw new IllegalArgumentException("Invalid amount for transaction");
         }
 
-        //Determine if the transaction will debit or credit the account
-        //Then save the account with the updated balance
+
         if (transactionType == TransactionType.DEBIT) {
             account.debit(transactionRequest.getTransactionAmount());
         }

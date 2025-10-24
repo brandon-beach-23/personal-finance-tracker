@@ -27,19 +27,6 @@ public class UserController {
     }
 
 
-
-    // MANAGEMENT: PUT /api/users/{id}/password
-//    @PutMapping("/{id}/password")
-//    public ResponseEntity<UserResponse> updatePassword(
-//            @PathVariable Long id,
-//            @RequestBody UpdatePasswordRequest updateRequest) {
-//
-//        // Note: In a secure application, the 'id' would be ignored, and the user's ID
-//        // would be pulled from the authenticated security context instead of the path.
-//        UserResponse userResponse = userService.updatePassword(id, updateRequest);
-//        return ResponseEntity.ok(userResponse);
-//    }
-
     // MANAGEMENT: DELETE /api/users/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
@@ -47,16 +34,10 @@ public class UserController {
         return ResponseEntity.noContent().build(); // 204 No Content for successful deletion
     }
 
-    // Although not strictly necessary for MVP, a method to get the logged-in user's profile is often useful
-    // MANAGEMENT: GET /api/users/{id}
+
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
-        // We assume the service has a method to retrieve a UserResponse by ID
-        // This is often used to pull profile data after a login or token verification
-        // UserResponse userResponse = userService.getUserById(id);
-        // return ResponseEntity.ok(userResponse);
 
-        // Since we didn't define getById, we'll placeholder this for now, but keep the mapping.
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
     }
 }

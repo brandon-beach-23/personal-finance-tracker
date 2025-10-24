@@ -33,38 +33,24 @@ public class AccountController {
 
     @PutMapping("/{id}")
     public ResponseEntity<AccountResponse> updateAccount(@PathVariable Long id, @RequestBody AccountRequest accountRequest, Principal principal) {
-        // You'll need to modify the service layer to verify ownership via principal.getName()
+
         AccountResponse accountResponse = accountService.updateAccount(accountRequest, id, principal.getName());
         return new ResponseEntity<>(accountResponse, HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteAccount(@PathVariable Long id, Principal principal) {
-        // You'll need to modify the service layer to verify ownership via principal.getName()
+
         accountService.deleteAccount(id, principal.getName());
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<AccountResponse> getAccountById(@PathVariable Long id, Principal principal) {
-        // You'll need to modify the service layer to verify ownership via principal.getName()
+
         Optional<AccountResponse> accountResponse = accountService.getAccountById(id, principal.getName());
         return accountResponse.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
-//
-//    @GetMapping
-//    // FIX: Removed @RequestParam("userId") and replaced with Principal
-//    public ResponseEntity<List<AccountResponse>> getAccountsByUserId(Principal principal) {
-//        // The service layer must now accept the username (string) or look up the ID internally
-//        if (principal == null) {
-//            // Should be handled by SecurityConfig, but as a safeguard:
-//            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-//        }
-//
-//
-//        List<AccountResponse> accountResponses = accountService.getAccountsByUsername(principal.getName());
-//        return ResponseEntity.ok(accountResponses);
-//    }
 
     @GetMapping
     public ResponseEntity<List<AccountResponse>> getAccountsByUsername(Principal principal) {

@@ -14,8 +14,6 @@ public class SavingsGoalResponse {
     public SavingsGoalResponse() {
     }
 
-
-
     public Long getId() {
         return id;
     }

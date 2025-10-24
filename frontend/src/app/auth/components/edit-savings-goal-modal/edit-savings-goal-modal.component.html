@@ -1,0 +1,53 @@
+<!-- Overlay: This provides the modal background effect -->
+<div class="modal-overlay" (click)="closeModal()"></div>
+
+<!-- Modal Content Container -->
+<div class="modal-dialog-centered">
+  <div class="modal-content">
+
+    <h2 class="mb-4 text-center text-primary">Edit Savings Goal</h2>
+
+    <!-- Response Message Area -->
+    <div *ngIf="responseMessage"
+         class="alert text-center fw-bold"
+         [class.alert-success]="responseMessage.includes('successfully')"
+         [class.alert-danger]="responseMessage.includes('failed')">
+      {{ responseMessage }}
+    </div>
+
+    <!-- Form -->
+    <form *ngIf="editSavingsGoalForm" [formGroup]="editSavingsGoalForm" (ngSubmit)="onUpdateSubmit()" class="card p-4 shadow-lg border-0">
+
+      <div class="mb-3">
+        <label for="goalName" class="form-label">Goal Name</label>
+        <input id="goalName" type="text" formControlName="goalName"
+               class="form-control" autocomplete="off"
+               [class.is-invalid]="editSavingsGoalForm.get('goalName')?.invalid && editSavingsGoalForm.get('goalName')?.touched">
+        <div *ngIf="editSavingsGoalForm.get('goalName')?.invalid && editSavingsGoalForm.get('goalName')?.touched" class="invalid-feedback">
+          Goal name is required.
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="targetAmount" class="form-label">Target Amount ($)</label>
+        <!-- Type number is critical for financial data input -->
+        <input id="targetAmount" type="number" formControlName="targetAmount"
+               class="form-control" autocomplete="off"
+               [class.is-invalid]="editSavingsGoalForm.get('targetAmount')?.invalid && editSavingsGoalForm.get('targetAmount')?.touched">
+        <div *ngIf="editSavingsGoalForm.get('targetAmount')?.invalid && editSavingsGoalForm.get('targetAmount')?.touched" class="invalid-feedback">
+          Target amount is required and must be a valid number.
+        </div>
+      </div>
+
+      <div class="d-grid gap-2">
+        <button type="submit" [disabled]="editSavingsGoalForm.invalid" class="btn btn-success btn-lg shadow-sm">
+          <i class="bi bi-save me-2"></i> Save Goal
+        </button>
+        <button type="button" (click)="closeModal()" class="btn btn-outline-secondary">
+          Cancel
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>

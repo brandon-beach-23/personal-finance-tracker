@@ -139,12 +139,19 @@ public class SavingsGoalServiceImpl implements SavingsGoalService {
     }
 
     public SavingsGoalResponse convertToDTO(SavingsGoal savingsGoal) {
+
+        System.out.println("Mapping goal: " + savingsGoal.getId() + ", account: " + savingsGoal.getSavingsAccount());
         SavingsGoalResponse savingsGoalResponse = new SavingsGoalResponse();
         savingsGoalResponse.setId(savingsGoal.getId());
-        savingsGoalResponse.setSavingsAccountId(savingsGoal.getSavingsAccount().getId());
         savingsGoalResponse.setGoalName(savingsGoal.getGoalName());
         savingsGoalResponse.setTargetAmount(savingsGoal.getTargetAmount());
 
+        if (savingsGoal.getSavingsAccount() != null) {
+            savingsGoalResponse.setSavingsAccountId(savingsGoal.getSavingsAccount().getId());
+        } else {
+            System.err.println("Warning: savingsGoal has no associated SavingsAccount");
+            savingsGoalResponse.setSavingsAccountId(null); // or handle differently if required
+        }
         return savingsGoalResponse;
     }
 

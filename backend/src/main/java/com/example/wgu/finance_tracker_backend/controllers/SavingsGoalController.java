@@ -51,9 +51,11 @@ public class SavingsGoalController {
     }
 
 
-    @GetMapping("/savingsAccountId")
-    public ResponseEntity<SavingsGoalResponse> getSavingsGoalsBySavingsAccountId(@RequestParam("savingsAccountId")Long savingsAccountId) {
-        Optional<SavingsGoalResponse> savingsGoalResponse = savingsGoalService.getBySavingsAccountId(savingsAccountId);
+    @GetMapping("/account/{accountId}")
+    public ResponseEntity<SavingsGoalResponse> getSavingsGoalsBySavingsAccountId(@PathVariable("accountId")Long accountId) {
+        System.out.println("GET savings goal for accountId: " + accountId);
+
+        Optional<SavingsGoalResponse> savingsGoalResponse = savingsGoalService.getBySavingsAccountId(accountId);
         return savingsGoalResponse.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 

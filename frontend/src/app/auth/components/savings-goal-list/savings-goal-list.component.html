@@ -23,7 +23,7 @@
 
             <!-- Edit/Delete Buttons -->
             <div class="d-flex gap-2">
-              <button class="btn btn-outline-primary btn-sm" (click)="openEditDeleteSavingsGoalModal(account)">
+              <button class="btn btn-outline-primary btn-sm" (click)="openEditSavingsGoalModal(account)">
                 Edit Goal
               </button>
 <!--              <button class="btn btn-outline-danger btn-sm" (click)="confirmDeleteGoal(account)">-->
@@ -50,3 +50,10 @@
   [selectedAccount]="selectedAccount()"
   (closeModal)="closeAddSavingsGoalModal()">
 </app-add-savings-goal-modal>
+
+<app-edit-savings-goal-modal
+  *ngIf="isEditSavingsGoalModalOpen()"
+  [savingsAccountId]="goalId"
+  (close)="closeEditSavingsGoalModal()"
+  (goalUpdated)="refreshAccounts()">
+</app-edit-savings-goal-modal>

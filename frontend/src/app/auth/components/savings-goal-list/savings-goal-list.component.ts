@@ -5,6 +5,7 @@ import {SavingsGoalService} from "../../savings-goal.service";
 import {AccountService} from "../../account.service";
 import {AsyncPipe, DecimalPipe, NgForOf, NgIf} from "@angular/common";
 import {AddSavingsGoalModalComponent} from "../add-savings-goal-modal/add-savings-goal-modal.component";
+import {EditSavingsGoalModalComponent} from "../edit-savings-goal-modal/edit-savings-goal-modal.component";
 
 @Component({
   selector: 'app-savings-goal-list',
@@ -14,7 +15,8 @@ import {AddSavingsGoalModalComponent} from "../add-savings-goal-modal/add-saving
     AsyncPipe,
     NgIf,
     NgForOf,
-    AddSavingsGoalModalComponent
+    AddSavingsGoalModalComponent,
+    EditSavingsGoalModalComponent
   ],
   templateUrl: './savings-goal-list.component.html',
   styleUrl: './savings-goal-list.component.css'
@@ -22,9 +24,11 @@ import {AddSavingsGoalModalComponent} from "../add-savings-goal-modal/add-saving
 export class SavingsGoalListComponent implements OnInit{
 
   public savingsAccounts$!: Observable<SavingsAccountResponse[]>;
+  public goalId: number | null | undefined = null;
+
 
   isAddSavingsGoalModalOpen = signal(false);
-  isEditDeleteSavingsGoalModalOpen = signal(false);
+  isEditSavingsGoalModalOpen = signal(false);
 
   selectedAccount = signal<SavingsAccountResponse | null>(null);
 
@@ -46,17 +50,20 @@ export class SavingsGoalListComponent implements OnInit{
     this.accountService.getAccounts().subscribe();
   }
 
-  openEditDeleteSavingsGoalModal(account: SavingsAccountResponse) {
+  openEditSavingsGoalModal(account: SavingsAccountResponse) {
+    this.goalId = account.savingsGoalResponse?.savingsAccountId;
     this.selectedAccount.set(account);
-    this.isEditDeleteSavingsGoalModalOpen.set(true);
+    this.isEditSavingsGoalModalOpen.set(true);
   }
 
-  closeEditDeleteSavingsGoalModal() {
-    this.isEditDeleteSavingsGoalModalOpen.set(false);
+  closeEditSavingsGoalModal() {
+    this.isEditSavingsGoalModalOpen.set(false);
     this.accountService.getAccounts().subscribe();
   }
 
   refreshAccounts() {
     this.accountService.getAccounts();
   }
+
+
 }

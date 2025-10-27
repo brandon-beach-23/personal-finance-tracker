@@ -18,6 +18,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
 
@@ -59,6 +61,8 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
+
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
@@ -75,22 +79,45 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
 
                 .authorizeHttpRequests(auth -> auth
-                        // Public login/register endpoints
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(
+                                "/actuator/**",
+                                "/api/health",
+                                "/api/auth/**"
+                        ).permitAll()
 
-                        // FIX: Secure /api/ accounts and other specific routes requiring ROLE_USER
-                        .requestMatchers("/api/accounts/**", "/api/goals/**", "/api/transactions/**").hasAuthority("ROLE_USER")
+                        .requestMatchers("/error").permitAll()
 
-                        // Fallback: All other /api/ endpoints require the ROLE_USER authority
+
+                        .requestMatchers(
+                                "/api/accounts/**",
+                                "/api/goals/**",
+                                "/api/transactions/**"
+                        ).hasAuthority("ROLE_USER")
+
                         .requestMatchers("/api/**").hasAuthority("ROLE_USER")
 
-                        // All other paths (non-API paths) must also be authenticated
                         .anyRequest().authenticated()
                 )
 
+
+                .anonymous(Customizer.withDefaults())
                 .addFilterBefore(this.jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/api/**")
+                        .allowedOrigins("*")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*");
+            }
+        };
+    }
+
 }

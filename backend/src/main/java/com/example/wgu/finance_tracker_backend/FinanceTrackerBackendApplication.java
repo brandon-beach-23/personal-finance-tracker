@@ -7,6 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class FinanceTrackerBackendApplication {
 
 	public static void main(String[] args) {
+		System.out.println("Starting Finance Tracker Backend...");
+
 		SpringApplication.run(FinanceTrackerBackendApplication.class, args);
 	}
 

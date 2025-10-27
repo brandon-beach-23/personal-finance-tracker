@@ -8,6 +8,8 @@ public class PasswordStrengthValidator implements ConstraintValidator<ValidPassw
     @Override
     public boolean isValid(String password, ConstraintValidatorContext context){
         if (password == null) {
+            System.out.println("❌ Password failed validation: " + password);
+
             return false;
         }
 

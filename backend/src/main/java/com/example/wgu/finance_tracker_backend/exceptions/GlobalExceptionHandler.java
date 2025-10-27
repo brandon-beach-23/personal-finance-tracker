@@ -3,6 +3,7 @@ package com.example.wgu.finance_tracker_backend.exceptions;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -41,4 +42,11 @@ public class GlobalExceptionHandler {
         // Updated message to be more explicit about a server-side failure
         return new ResponseEntity<>("An unexpected internal server error occurred. Please check the server logs for details.", HttpStatus.INTERNAL_SERVER_ERROR); // 500
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleValidationError(MethodArgumentNotValidException ex) {
+        System.out.println("❌ Validation error: " + ex.getMessage());
+        return ResponseEntity.badRequest().body("Validation failed");
+    }
+
 }

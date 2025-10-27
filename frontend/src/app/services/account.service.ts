@@ -4,6 +4,7 @@ import {BehaviorSubject, Observable, tap, throwError} from "rxjs";
 import {AccountResponse} from "../models/account-response.model";
 import {catchError} from "rxjs/operators";
 import {AccountRequest} from "../models/account-request.model";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ import {AccountRequest} from "../models/account-request.model";
 export class AccountService {
 
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8080/api/accounts';
+  private apiUrl = `${environment.apiUrl}/api/accounts`;
   private accountsSubject = new BehaviorSubject<AccountResponse[]>([]);
   public accounts$: Observable<AccountResponse[]> = this.accountsSubject.asObservable();
 
@@ -86,4 +87,10 @@ export class AccountService {
       })
     );
   }
+
+  public clearState(): void {
+    this.accountsSubject.next([]);
+    this.selectedAccountSubject.next(null);
+  }
+
 }

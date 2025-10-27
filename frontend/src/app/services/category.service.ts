@@ -5,6 +5,7 @@ import {CategoryResponse} from "../models/category-response.model";
 import {catchError} from "rxjs/operators";
 import {CategoryRequest} from "../models/category-request.model";
 import {error} from "@angular/compiler-cli/src/transformers/util";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ import {error} from "@angular/compiler-cli/src/transformers/util";
 export class CategoryService {
 
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8080/api/categories';
+  private apiUrl = `${environment.apiUrl}/api/categories`;
   private categoriesSubject = new BehaviorSubject<CategoryResponse[]>([]);
   public categories$ = this.categoriesSubject.asObservable();
 

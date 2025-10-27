@@ -205,12 +205,16 @@ public class TransactionServiceImpl implements TransactionService {
 
         //Check to make sure the authorized user making the request owns the account
         String accountUsername = account.getUser().getUserName();
+        System.out.println("Requested account ID: " + accountId);
+        System.out.println("Account belongs to: " + account.getUser().getUserName());
+        System.out.println("Authenticated user: " + username);
+
 
         if(!accountUsername.equals(username)){
             throw new InvalidCredentialsException("The user does not own the account");
         }
 
-        List<Transaction> transactions = transactionRepository.findByAccountId(accountId);
+        List<Transaction> transactions = transactionRepository.findByAccountIdAndUserName(accountId, username);
         System.out.println("Fetched transactions: " + transactions.size());
         return transactions.stream()
                 .map(this::convertToDto)
@@ -244,6 +248,9 @@ public class TransactionServiceImpl implements TransactionService {
 
         return response;
     }
+
+
+
 
     private boolean userOwnsAccount(User user, String username) {
         return user.getUserName().equals(username);

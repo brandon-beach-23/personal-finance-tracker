@@ -6,6 +6,7 @@ import {TransactionRequest} from "../models/transaction-request.model";
 import {catchError} from "rxjs/operators";
 import {AccountResponse} from "../models/account-response.model";
 import {AccountService} from "./account.service";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class TransactionService {
 
   private http = inject(HttpClient)
   private accountService = inject(AccountService);
-  private apiUrl = 'http://localhost:8080/api/transactions';
+  private apiUrl = `${environment.apiUrl}/api/transactions`;
   private transactionsSubject =  new BehaviorSubject<TransactionResponse[]>([]);
   public transactions$: Observable<TransactionResponse[]> = this.transactionsSubject.asObservable();
   public selectedAccountIdSubject = new BehaviorSubject<number | null>(null);
@@ -156,5 +157,16 @@ export class TransactionService {
       })
     );
   }
+  public clearState(): void {
+    this.selectedAccountIdSubject.next(null);
+    this.selectedAccountNameSubject.next(null);
+    this.selectedTransactionIdSubject.next(null);
+    this.selectedTransactionNameSubject.next(null);
+    this.selectedAccountSubject.next(null);
+    this.transactionsSubject.next([]);
+  }
+
+
+
 
 }

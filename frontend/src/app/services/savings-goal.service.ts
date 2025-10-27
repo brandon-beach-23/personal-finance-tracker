@@ -4,13 +4,14 @@ import {SavingsGoalRequest} from "../models/savings-goal-request.model";
 import {Observable} from "rxjs";
 import {SavingsAccountResponse} from "../models/savings-account-response.model";
 import {SavingsGoalResponse} from "../models/savings-goal-response.model";
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class SavingsGoalService {
 
-  private apiUrl = '/api/savings-goals';
+  private apiUrl = `${environment.apiUrl}/api/savings-goals`;
   private http = inject(HttpClient);
 
   constructor() { }

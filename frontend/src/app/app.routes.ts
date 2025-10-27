@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
 import {DashboardComponent} from "./dashboard/dashboard.component";
-import {RegistrationComponent} from  './auth/components/registration/registration.component';
-import {LoginComponent} from "./auth/components/login/login.component";
+import {RegistrationComponent} from './auth/registration/registration.component';
+import {LoginComponent} from "./auth/login/login.component";
 import {AuthGuard} from "./auth/auth.guard";
-import {SpendingReportComponent} from "./auth/components/spending-report/spending-report.component";
+import {SpendingReportComponent} from "./features/reports/spending-report/spending-report.component";
 
 export const routes: Routes = [
   // Default path if logged in

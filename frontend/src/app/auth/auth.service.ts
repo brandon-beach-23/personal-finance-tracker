@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {RegistrationRequest} from './models/registration-request.model';
+import {RegistrationRequest} from '../models/registration-request.model';
 import {BehaviorSubject, Observable, tap} from 'rxjs';
-import {LoginRequest} from "./models/login-request.model";
-import {LoginResponse} from "./models/login-response.model";
+import {LoginRequest} from "../models/login-request.model";
+import {LoginResponse} from "../models/login-response.model";
 import {Router} from "@angular/router";
 import {jwtDecode} from "jwt-decode";
 

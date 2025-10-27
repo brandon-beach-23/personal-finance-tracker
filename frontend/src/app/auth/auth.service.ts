@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {RegistrationRequest} from './models/registration-request.model';
-import {Observable, tap} from 'rxjs';
+import {BehaviorSubject, Observable, tap} from 'rxjs';
 import {LoginRequest} from "./models/login-request.model";
 import {LoginResponse} from "./models/login-response.model";
 import {Router} from "@angular/router";
@@ -15,8 +15,11 @@ export class AuthService {
   private apiUrl = 'http://localhost:8080/api/auth';
   private TOKEN_KEY = 'jwt_token';
   private USERNAME_KEY = 'username';
+  private loggedIn$ =  new BehaviorSubject<boolean>(false);
 
-  constructor(private http: HttpClient, private router: Router) {    }
+  constructor(private http: HttpClient, private router: Router) {
+    this.updateLoginStatus();
+  }
 
   register(data: RegistrationRequest): Observable<any> {
     const url = `${this.apiUrl}/register`;
@@ -25,20 +28,28 @@ export class AuthService {
 
   login(credentials: LoginRequest): Observable<any> {
     const url = `${this.apiUrl}/login`;
+
     return this.http.post<LoginResponse>(url, credentials).pipe(tap(response => {
       localStorage.setItem(this.TOKEN_KEY, response.token);
       localStorage.setItem(this.USERNAME_KEY, response.username);
+      this.updateLoginStatus();
       })
     );
   }
 
   getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
+    try {
+      return localStorage.getItem(this.TOKEN_KEY);
+    } catch (e) {
+      console.error('Error accessing localStorage:', e);
+      return null;
+    }
   }
 
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.USERNAME_KEY);
+    this.updateLoginStatus();
     this.router.navigate(['/login']);
   }
 
@@ -60,5 +71,13 @@ export class AuthService {
 
   getCurrentUsername(): string | null {
     return localStorage.getItem(this.USERNAME_KEY);
+  }
+
+  get isLoggedIn$(): Observable<boolean> {
+    return this.loggedIn$.asObservable();
+  }
+
+  updateLoginStatus(): void {
+    this.loggedIn$.next(this.isLoggedIn());
   }
 }

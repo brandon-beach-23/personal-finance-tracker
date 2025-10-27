@@ -34,7 +34,7 @@ public class AccountServiceImplTest {
 
     @Test
     void createAccount_Success() {
-        // Arrange
+
         String username = "testuser";
 
         User mockUser = new User();
@@ -57,10 +57,8 @@ public class AccountServiceImplTest {
         Mockito.when(accountRepository.existsByAccountNameAndUser("My Checking", mockUser)).thenReturn(false);
         Mockito.when(accountRepository.save(Mockito.any(Account.class))).thenReturn(expectedAccount);
 
-        // Act
         AccountResponse response = accountService.createAccount(request, username);
 
-        // Assert
         assertEquals("My Checking", response.getAccountName());
         assertEquals(BigDecimal.valueOf(500), response.getBalance());
         assertEquals("CHECKING", response.getAccountType());

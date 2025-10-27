@@ -106,12 +106,8 @@ public class TransactionServiceImplTest {
         Mockito.when(transactionRepository.save(Mockito.any(Transaction.class))).thenReturn(savedTransaction);
 
         transactionService.createTransaction(debitRequest, "testuser");
-
-        // Assert
-        // 2. Verify the side effects (Account balance update)
         assertEquals(EXPECTED_DEBIT_BALANCE, mockAccount.getBalance(), "Account balance should be debited by 50.00");
 
-        // 3. Verify interactions with repositories
         Mockito.verify(accountRepository, Mockito.times(1)).save(mockAccount);
         Mockito.verify(transactionRepository, Mockito.times(1)).save(Mockito.any(Transaction.class));
     }

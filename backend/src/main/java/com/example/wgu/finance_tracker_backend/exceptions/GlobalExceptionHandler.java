@@ -4,18 +4,34 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
-@ControllerAdvice
+import java.util.Map;
+
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     // Handles resource not found (e.g., account ID not found)
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND); // 404
+    public ResponseEntity<Map<String, String>> handleResourceNotFound(ResourceNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("error", ex.getMessage()));
     }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidCredentials(InvalidCredentialsException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(Map.of("error", ex.getMessage()));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, String>> handleGeneric(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("error", "An unexpected error occurred"));
+    }
+
 
     /**
      * ⭐️ FIX: Maps business logic errors (IllegalStateException from service) and
@@ -34,18 +50,9 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(message, HttpStatus.CONFLICT); // 409
     }
 
-    // Fallback for all other exceptions
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleGlobalException(Exception ex, WebRequest request) {
-        // Log the exception details here for debugging
-        ex.printStackTrace();
-        // Updated message to be more explicit about a server-side failure
-        return new ResponseEntity<>("An unexpected internal server error occurred. Please check the server logs for details.", HttpStatus.INTERNAL_SERVER_ERROR); // 500
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationError(MethodArgumentNotValidException ex) {
-        System.out.println("❌ Validation error: " + ex.getMessage());
+        System.out.println("Validation error: " + ex.getMessage());
         return ResponseEntity.badRequest().body("Validation failed");
     }
 

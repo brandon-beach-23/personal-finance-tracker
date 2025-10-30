@@ -47,9 +47,9 @@
           </div>
 
           <div class="mb-3">
-            <label for="categoryId" class="form-label">Category</label>
-            <select id="categoryId" class="form-select" formControlName="categoryId">
-              <option [ngValue]="category.categoryId" *ngFor="let category of categories">{{ category.categoryName }}</option>
+            <label for="categoryName" class="form-label">Category</label>
+            <select id="categoryName" class="form-select" formControlName="categoryName">
+              <option [ngValue]="category.categoryName" *ngFor="let category of categories">{{ category.categoryName }}</option>
             </select>
           </div>
 

@@ -34,11 +34,19 @@ export class EditDeleteTransactionModalComponent implements OnInit{
   public selectedTransaction: TransactionResponse | null = null;
 
   ngOnInit() {
-      if (this.transactionId) {
-        this.loadTransactionDetails(this.transactionId);
-        this.categoryService.getAllCategories().subscribe(data => this.categories = data)
-      }
+    if (this.transactionId) {
+      this.categoryService.getAllCategories().subscribe({
+        next: (data) => {
+          this.categories = data;
+          this.loadTransactionDetails(this.transactionId!);
+        },
+        error: (err) => {
+          console.error("Failed to load categories:", err);
+        }
+      });
+    }
   }
+
 
   private loadTransactionDetails(id: number) {
     this.transactionService.getTransactionById(id).subscribe({

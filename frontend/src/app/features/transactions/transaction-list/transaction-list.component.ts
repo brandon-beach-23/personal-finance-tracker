@@ -66,6 +66,7 @@ export class TransactionListComponent implements OnInit{
 
   closeAddTransactionModal(): void {
     this.isAddTransactionModalOpen.set(false);
+    this.refreshCategories();
   }
 
   openEditDeleteTransactionModal(): void {
@@ -127,7 +128,12 @@ export class TransactionListComponent implements OnInit{
     });
   }
 
-
+private refreshCategories(): void {
+    this.categoryService.getAllCategories().subscribe(categoryResponses => {
+      this.categories = categoryResponses.map(cat => cat.categoryName);
+      console.log('Categories refreshed:', this.categories);
+    });
+}
 
 
 }

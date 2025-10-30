@@ -36,8 +36,4 @@ export class SavingsGoalService {
   getGoalBySavingsAccountId(accountId: number): Observable<SavingsGoalResponse> {
     return this.http.get<SavingsGoalResponse>(`/api/savings-goals/account/${accountId}`);
   }
-
-
-
-
 }

@@ -52,7 +52,9 @@ export class SavingsGoalListComponent implements OnInit{
   }
 
   openEditSavingsGoalModal(account: SavingsAccountResponse) {
-    this.goalId = account.savingsGoalResponse?.savingsAccountId;
+    console.log('Opening modal with goal ID:', account.savingsGoalResponse?.id);
+
+    this.goalId = account.savingsGoalResponse?.id;
     this.selectedAccount.set(account);
     this.isEditSavingsGoalModalOpen.set(true);
   }

@@ -23,19 +23,21 @@ export class EditSavingsGoalModalComponent implements OnInit{
   public editSavingsGoalForm!: FormGroup;
   responseMessage: string = '';
 
-  @Input() savingsAccountId: number | null | undefined = null;
+  @Input() goalId: number | null | undefined = null;
   @Output() close = new EventEmitter<void>();
   @Output() goalUpdated = new EventEmitter<void>();
 
 
   ngOnInit() {
-    if (this.savingsAccountId){
-      this.loadSavingsGoalDetails(this.savingsAccountId);
+    if (this.goalId){
+      console.log('Modal received goal ID:', this.goalId);
+
+      this.loadSavingsGoalDetails(this.goalId);
     }
   }
 
   private loadSavingsGoalDetails(id: number): void {
-    this.savingsGoalService.getGoalBySavingsAccountId(id).subscribe({
+    this.savingsGoalService.getGoalById(id).subscribe({
       next: (savingsGoal) => {
         this.selectedSavingsGoal = savingsGoal;
         this.initializeForm(savingsGoal);

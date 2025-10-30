@@ -54,7 +54,7 @@
 
 <app-edit-savings-goal-modal
   *ngIf="isEditSavingsGoalModalOpen()"
-  [savingsAccountId]="goalId"
+  [goalId]="goalId"
   (close)="closeEditSavingsGoalModal()"
   (goalUpdated)="refreshAccounts()">
 </app-edit-savings-goal-modal>
